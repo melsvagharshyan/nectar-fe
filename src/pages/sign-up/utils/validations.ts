@@ -4,7 +4,11 @@ import { MIN_PASSWORD_LENGTH } from "./constants";
 export const signUpSchema = z
   .object({
     role: z.enum(["broker", "partner", "admin"]),
-    name: z.string().trim().min(2, "Имя должно содержать минимум 2 символа"),
+    name: z
+      .string()
+      .trim()
+      .min(1, "Введите имя и фамилию")
+      .min(2, "Имя должно содержать минимум 2 символа"),
     email: z
       .string()
       .trim()

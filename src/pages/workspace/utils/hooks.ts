@@ -7,10 +7,15 @@ import {
   isRequestEditable,
   selectedOffers,
 } from "../../../demo/selectors";
-import type { Actor } from "../../../demo/types";
+import { notify, UNDO_LABEL } from "../../../components/toaster";
+import type { Actor, Offer } from "../../../demo/types";
 import { brokerCompanyIdFor } from "../../../utils/helpers";
 import { useFilterForm } from "../../../utils/hooks";
-import { DEFAULT_OFFER_FILTERS, EMPTY_CLIENT_FILTERS } from "./constants";
+import {
+  DEFAULT_OFFER_FILTERS,
+  EMPTY_CLIENT_FILTERS,
+  OFFER_TOASTS,
+} from "./constants";
 import {
   filterClientRequests,
   filterClients,
@@ -136,3 +141,37 @@ export function useWorkspace(admin: boolean) {
 }
 
 export type WorkspaceModel = ReturnType<typeof useWorkspace>;
+
+/** Booking and rejecting an offer, each confirmed by a toast that can undo it. */
+export function useOfferActions({ dispatch, actor }: WorkspaceModel, offer: Offer) {
+  const setBooked = async (booked: boolean, undoable = true) => {
+    const { error } = await dispatch({
+      type: "INTEREST",
+      actor,
+      offerId: offer.id,
+      selected: booked,
+    });
+    if (error || !undoable) return;
+    const toast = booked ? OFFER_TOASTS.booked : OFFER_TOASTS.unbooked;
+    notify.success(toast.title, {
+      description: toast.description,
+      action: { label: UNDO_LABEL, onClick: () => void setBooked(!booked, false) },
+    });
+  };
+
+  const setRejected = async (rejected: boolean, undoable = true) => {
+    const { error } = await dispatch({
+      type: rejected ? "REJECT" : "RESTORE",
+      actor,
+      offerId: offer.id,
+    });
+    if (error || !undoable) return;
+    const toast = rejected ? OFFER_TOASTS.rejected : OFFER_TOASTS.restored;
+    notify.success(toast.title, {
+      description: toast.description,
+      action: { label: UNDO_LABEL, onClick: () => void setRejected(!rejected, false) },
+    });
+  };
+
+  return { setBooked, setRejected };
+}

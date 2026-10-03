@@ -10,7 +10,7 @@ import { PropertyBaseHeader } from "./PropertyBaseHeader";
 import { PropertyListRow } from "./PropertyListRow";
 
 const CATALOG_GRID =
-  "partner-catalog grid auto-rows-max content-start gap-16 p-14 grid-cols-[repeat(auto-fit,minmax(min(100%,280px),1fr))]";
+  "partner-catalog grid auto-rows-max content-start gap-16 p-16 grid-cols-[repeat(auto-fit,minmax(min(100%,280px),1fr))]";
 
 export function PropertyBaseColumn({
   model: m,

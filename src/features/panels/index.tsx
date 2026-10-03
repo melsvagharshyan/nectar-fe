@@ -7,7 +7,6 @@ import { CompanyPanel } from "./components/CompanyPanel";
 import { DeniedNotice } from "./components/DeniedNotice";
 import { DirectoryPanel } from "./components/DirectoryPanel";
 import { NotificationsPanel } from "./components/NotificationsPanel";
-import { ProfilePanel } from "./components/ProfilePanel";
 import { PropertyPanel } from "./components/PropertyPanel";
 import { RequestPanel } from "./components/RequestPanel";
 import { SendOfferPanel } from "./components/SendOfferPanel";
@@ -67,8 +66,6 @@ export function Panels({ role, toast }: PanelProps) {
       return <NotificationsPanel role={role} />;
     case "directory":
       return <DirectoryPanel role={role} />;
-    case "profile":
-      return <ProfilePanel role={role} />;
     default:
       return (
         <Overlay title="Панель" onClose={closePanel}>

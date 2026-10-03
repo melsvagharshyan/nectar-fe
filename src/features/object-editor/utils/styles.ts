@@ -31,7 +31,7 @@ const PREVIEW_BASE =
 
 export const PREVIEW = {
   overlay: `${PREVIEW_BASE} max-w-500 max-lg:static max-md:max-w-none`,
-  embedded: `${PREVIEW_BASE} flex min-h-[calc(100dvh-190px)] max-w-none flex-col items-center justify-center p-32 max-[1025px]:p-20 max-md:static max-md:min-h-0 max-md:p-16`,
+  embedded: `${PREVIEW_BASE} flex min-h-[calc(100dvh-190px)] max-w-none flex-col items-center justify-center gap-20 p-32 max-[1025px]:p-20 max-md:static max-md:min-h-0 max-md:p-16`,
 };
 
 const FORM_BASE = "flex min-w-0 flex-col gap-20";

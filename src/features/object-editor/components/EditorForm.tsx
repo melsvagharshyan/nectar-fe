@@ -7,13 +7,12 @@ import { MediaSection } from "./MediaSection";
 import { PriceSection } from "./PriceSection";
 import { TypeSection } from "./TypeSection";
 import { ACTIONS, EMBEDDED_PRIMARY, FIELDSET, FORM } from "../utils/styles";
-import { ERROR_BOX, FORM_ACTIONS } from "../../../utils/styles";
+import { FORM_ACTIONS } from "../../../utils/styles";
 import { cn } from "../../../utils/helpers";
 
 export interface EditorMediaUpload {
   upload: (files: File[]) => void;
   uploading: boolean;
-  uploadError?: string;
 }
 
 export function EditorForm({
@@ -24,7 +23,6 @@ export function EditorForm({
   embedded,
   mobileHidden,
   saving,
-  serverError,
   media,
   onSaveDraft,
   onPublish,
@@ -38,7 +36,6 @@ export function EditorForm({
   /** Below 801px only one of preview / form is shown. */
   mobileHidden: boolean;
   saving: boolean;
-  serverError?: string;
   media: EditorMediaUpload;
   onSaveDraft: () => void;
   onPublish: () => void;
@@ -64,15 +61,9 @@ export function EditorForm({
         <DescriptionSection />
         <MediaSection
           uploading={media.uploading}
-          uploadError={media.uploadError}
           onUpload={media.upload}
         />
       </fieldset>
-      {serverError && (
-        <p className={ERROR_BOX} role="alert">
-          {serverError}
-        </p>
-      )}
       <div className={cn(FORM_ACTIONS, ACTIONS[context])}>
         <Button onClick={onClose}>Назад к списку</Button>
         {!readonly && (

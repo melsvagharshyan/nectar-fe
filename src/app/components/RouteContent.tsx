@@ -5,10 +5,12 @@ import { Catalog } from "../../pages/catalog";
 import { Companies } from "../../pages/companies";
 import { PartnerOffers } from "../../pages/partner-offers";
 import { PartnerWorkspace } from "../../pages/partner-workspace";
+import { Profile } from "../../pages/profile";
 import { Settings } from "../../pages/settings";
 import { Workspace } from "../../pages/workspace";
 import { ROLE_HOMES } from "../../utils/constants";
 import { navigate } from "../router";
+import { PROFILE_SCREEN } from "../utils/constants";
 import type { Route, ShellLocation } from "../utils/types";
 import { NotFound } from "./NotFound";
 import { PAGE } from "../../utils/styles";
@@ -25,6 +27,7 @@ export function RouteContent({
 }) {
   if (!validRole)
     return <NotFound actionLabel="Вернуться в кабинет" target="/" />;
+  if (screen === PROFILE_SCREEN) return <Profile />;
   if (screen === "settings") return <Settings role={role} />;
   if (screen === "analytics") return <Analytics role={role} />;
   if (screen === "objects" && route.path.endsWith("/new") && role === "partner")

@@ -27,7 +27,10 @@ export function SendOfferPanel({ role, toast }: PanelProps) {
     });
     setSending(false);
     if (error) return;
-    toast("Предложения отправлены брокеру");
+    toast(
+      "Предложения отправлены брокеру",
+      `Объектов: ${draft.length} · брокер уже видит их в рабочем экране`,
+    );
     closePanel();
   };
 

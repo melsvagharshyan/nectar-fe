@@ -5,6 +5,7 @@ import { EditorForm } from "./components/EditorForm";
 import { EditorFrame } from "./components/EditorFrame";
 import { EditorTabs } from "./components/EditorTabs";
 import { PreviewDialog } from "./components/PreviewDialog";
+import { PreviewHeader } from "./components/PreviewHeader";
 import { PREVIEW_CARD, PREVIEW_CARD_EMBEDDED } from "./utils/constants";
 import { editorTitle } from "./utils/helpers";
 import { useObjectEditor } from "./utils/hooks";
@@ -50,6 +51,7 @@ export function ObjectEditor(props: ObjectEditorProps) {
                   editor.tab === "form" && "max-md:hidden",
                 )}
               >
+                {embedded && <PreviewHeader hasPhotos={preview.media.length > 0} />}
                 <PropertyCard
                   property={preview}
                   variant="compact"
@@ -67,7 +69,6 @@ export function ObjectEditor(props: ObjectEditorProps) {
                   embedded={embedded}
                   mobileHidden={editor.tab === "preview"}
                   saving={editor.saving}
-                  serverError={editor.serverError}
                   media={editor.media}
                   onSaveDraft={editor.saveDraft}
                   onPublish={editor.publish}

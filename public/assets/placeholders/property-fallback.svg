@@ -1,1 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800"><rect width="600" height="800" fill="#1b3029"/><g fill="none" stroke="#718e80" stroke-width="3"><path d="M200 400V290l100-75 100 75v110zM275 400v-85h50v85"/><path d="M170 425h260"/></g><text x="300" y="480" text-anchor="middle" fill="#b9c9c1" font-size="20" font-family="sans-serif">Фото пока нет</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#f8fafc"/>
+  <rect x="356" y="226" width="88" height="88" rx="22" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+  <g fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="376" y="248" width="48" height="42" rx="7"/>
+    <circle cx="391" cy="262" r="4.5"/>
+    <path d="M378 284 L395 269 L406 278 L413 273 L422 281"/>
+  </g>
+  <text x="400" y="352" text-anchor="middle" fill="#64748b" font-size="20" font-weight="500" font-family="Inter, -apple-system, 'Segoe UI', sans-serif">Фото пока нет</text>
+</svg>

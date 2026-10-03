@@ -7,6 +7,7 @@ import { Badge, Button, OverlayFooter } from "../../../components/ui";
 import { cn, formatDate } from "../../../utils/helpers";
 import { clientOf } from "../utils/helpers";
 import { usePanelContext } from "../utils/hooks";
+import type { PanelProps } from "../utils/types";
 import { AdminRequestInfo } from "./AdminRequestInfo";
 import { OfferStatusList } from "./OfferStatusList";
 import { BOX, DETAILS_GRID, ROW } from "../../../utils/styles";
@@ -18,7 +19,7 @@ export function RequestDetails({
 }: {
   role: Role;
   request: Request;
-  toast: (message: string) => void;
+  toast: PanelProps["toast"];
 }) {
   const { state, dispatch, projected, actor, goToRequest } =
     usePanelContext(role);
@@ -79,7 +80,8 @@ export function RequestDetails({
                 actor,
                 requestId: request.id,
               });
-              if (!error) toast("Подбор начат");
+              if (!error)
+                toast("Подбор начат", "Армянские партнёры уже видят запрос");
             }}
           >
             Начать подбор

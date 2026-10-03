@@ -5,7 +5,12 @@ import { toPartnerView } from "../../../demo/projections";
 import type { Actor } from "../../../demo/types";
 import { currentCompanyId } from "../../../utils/helpers";
 import { useFilterForm } from "../../../utils/hooks";
-import { DEFAULT_PARTNER_FILTERS, RESET_PARTNER_FILTERS } from "./constants";
+import { notify, UNDO_LABEL } from "../../../components/toaster";
+import {
+  DEFAULT_PARTNER_FILTERS,
+  DRAFT_TOASTS,
+  RESET_PARTNER_FILTERS,
+} from "./constants";
 import {
   availableProperties,
   filterPartnerRequests,
@@ -31,14 +36,22 @@ export function usePartnerWorkspace() {
   const request = requests.find((r) => r.id === requestedId) || requests[0];
   const draft = request ? data.drafts[request.id] || [] : [];
 
-  const toggleDraft = (propertyId: string) =>
-    request &&
-    dispatch({
+  const toggleDraft = async (propertyId: string, undoable = true) => {
+    if (!request) return;
+    const wasInDraft = draft.includes(propertyId);
+    const { error } = await dispatch({
       type: "DRAFT_TOGGLE",
       actor,
       requestId: request.id,
       propertyId,
     });
+    if (error || !undoable) return;
+    const toast = wasInDraft ? DRAFT_TOASTS.removed : DRAFT_TOASTS.added;
+    notify.success(toast.title, {
+      description: toast.description,
+      action: { label: UNDO_LABEL, onClick: () => void toggleDraft(propertyId, false) },
+    });
+  };
 
   return {
     data,

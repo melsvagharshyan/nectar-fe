@@ -1,5 +1,5 @@
 import { theme as antdTheme, type ThemeConfig } from "antd";
-import type { Role } from "../../demo/types";
+import type { DemoAction, Role } from "../../demo/types";
 import type { Theme } from "../../utils/types";
 import type { MenuItem } from "./types";
 
@@ -109,7 +109,32 @@ export const ROLE_MENUS: Record<Role, MenuItem[]> = {
 
 export const DISABLED_MENU_ITEMS = ["knowledge"];
 
-export const TOAST_DURATION_MS = 4500;
+export const PROFILE_SCREEN = "profile";
+
+export const PROFILE_MENU_KEYS = {
+  profile: "profile",
+  settings: "settings",
+  signOut: "sign-out",
+} as const;
+
+export const SETTINGS_LABELS: Record<Role, string> = {
+  broker: "Настройки компании",
+  partner: "Настройки компании",
+  admin: "Настройки",
+};
+
+export const ACTION_ERROR_TITLES: Record<DemoAction["type"], string> = {
+  READ_EVENT: "Не удалось отметить уведомление",
+  INTEREST: "Не удалось изменить бронь",
+  REJECT: "Не удалось отклонить объект",
+  RESTORE: "Не удалось вернуть объект",
+  DRAFT_TOGGLE: "Не удалось изменить подборку",
+  SEND_OFFERS: "Не удалось отправить предложения",
+  TRANSFER: "Не удалось передать запрос в CRM",
+  RETURN: "Не удалось вернуть запрос в работу",
+  SELL: "Не удалось завершить сделку",
+  START: "Не удалось начать подбор",
+};
 
 export const AUTH_ROUTES = {
   signIn: "/sign-in",

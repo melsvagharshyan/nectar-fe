@@ -3,7 +3,7 @@ import { PropertyCard } from "../../../components/property-card";
 import { Button, Icon } from "../../../components/ui";
 import { offerPresentation } from "../../../demo/selectors";
 import type { Offer, Request } from "../../../demo/types";
-import type { WorkspaceModel } from "../utils/hooks";
+import { useOfferActions, type WorkspaceModel } from "../utils/hooks";
 
 export function OfferCard({
   model: m,
@@ -14,15 +14,14 @@ export function OfferCard({
   offer: Offer;
   request: Request;
 }) {
-  const { state, dispatch, actor, editable } = m;
+  const { state, actor, editable } = m;
   const p = m.data.properties.find((x) => x.id === o.propertyId)!;
   const presentation = offerPresentation(state, o, actor);
   const rejected = o.disposition === "rejected";
-  const toggleInterest = () =>
-    dispatch({ type: "INTEREST", actor, offerId: o.id });
+  const { setBooked, setRejected } = useOfferActions(m, o);
+  const toggleInterest = () => void setBooked(!presentation.selected);
   const openTransfer = () => {
-    if (presentation.canSelect)
-      dispatch({ type: "INTEREST", actor, offerId: o.id, selected: true });
+    if (presentation.canSelect && !presentation.selected) void setBooked(true, false);
     panel("transfer", { request: request.id, client: request.clientId });
   };
 
@@ -46,13 +45,7 @@ export function OfferCard({
           <>
             <Button
               disabled={!presentation.canReject}
-              onClick={() =>
-                dispatch({
-                  type: rejected ? "RESTORE" : "REJECT",
-                  actor,
-                  offerId: o.id,
-                })
-              }
+              onClick={() => void setRejected(!rejected)}
             >
               <Icon name="close" />
               {rejected ? "Вернуть" : "Отказ"}

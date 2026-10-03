@@ -32,7 +32,7 @@ export function FeaturesSection({ type }: { type: string }) {
   );
   return (
     <details className={SECTION} open>
-      <summary className={SECTION_SUMMARY}>ОСНАЩЕНИЕ И ХАРАКТЕРИСТИКИ</summary>
+      <summary className={SECTION_SUMMARY}>Оснащение и характеристики</summary>
       <div className={FORM_GRID}>
         {field("repair", "Ремонт", EDITOR_REPAIR_OPTIONS)}
         {!isLand && field("furniture", "Мебель", EDITOR_FURNITURE_OPTIONS)}
@@ -46,7 +46,8 @@ export function FeaturesSection({ type }: { type: string }) {
         name="amenities"
         render={({ field }) => (
           <ChipGroup
-            label="УДОБСТВА И ОСОБЕННОСТИ"
+            label="Удобства и особенности"
+            className="mt-20 border-t border-line pt-20"
             options={EDITOR_AMENITIES}
             value={field.value}
             onChange={field.onChange}

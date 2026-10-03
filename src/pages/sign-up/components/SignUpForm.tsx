@@ -1,28 +1,39 @@
+import { useFormContext } from "react-hook-form";
 import { ControlledField } from "../../../components/form";
+import { AUTH_SUBMIT_BUTTON } from "../../../components/auth-layout";
 import { Button } from "../../../components/ui";
-import { ERROR_BOX, FORM, FORM_GRID } from "../../../utils/styles";
-import { ROLE_OPTIONS, SIGN_UP_FORM_ID } from "../utils/constants";
-import { useSignUpForm } from "../utils/hooks";
-import { RolePicker } from "./RolePicker";
+import type { Role } from "../../../demo/types";
+import { FORM, FORM_GRID } from "../../../utils/styles";
+import { MIN_PASSWORD_LENGTH, ROLE_OPTIONS, SIGN_UP_FORM_ID } from "../utils/constants";
+import type { SignUpFormValues } from "../utils/types";
+import { SelectedRole } from "./SelectedRole";
 
-export function SignUpForm() {
-  const { form, role, submit, error } = useSignUpForm();
-  const { control, formState } = form;
-  const { companyLabel } = ROLE_OPTIONS[role];
+export function SignUpForm({
+  role,
+  onSubmit,
+  onChangeRole,
+}: {
+  role: Role;
+  onSubmit: () => void;
+  onChangeRole: () => void;
+}) {
+  const { control, formState } = useFormContext<SignUpFormValues>();
+  const { company, phonePlaceholder } = ROLE_OPTIONS[role];
 
   return (
-    <form id={SIGN_UP_FORM_ID} className={FORM} onSubmit={submit} noValidate>
-      <RolePicker control={control} />
-      <ControlledField control={control} name="name" label="Имя и фамилия" autoComplete="name" />
+    <form id={SIGN_UP_FORM_ID} className={FORM} onSubmit={onSubmit} noValidate>
+      <SelectedRole role={role} onChange={onChangeRole} />
+      <ControlledField control={control} name="name" label="Имя и фамилия" placeholder="Анна Петрова" autoComplete="name" />
       <div className={FORM_GRID}>
-        <ControlledField control={control} name="email" label="Email" type="email" autoComplete="email" />
-        <ControlledField control={control} name="phone" label="Телефон (необязательно)" type="tel" autoComplete="tel" />
+        <ControlledField control={control} name="email" label="Email" type="email" placeholder="name@example.com" autoComplete="email" />
+        <ControlledField control={control} name="phone" label="Телефон · необязательно" type="tel" placeholder={phonePlaceholder} autoComplete="tel" />
       </div>
-      {companyLabel ? (
+      {company ? (
         <ControlledField
           control={control}
           name="companyName"
-          label={`Название компании · ${companyLabel}`}
+          label={company.label}
+          placeholder={company.placeholder}
           autoComplete="organization"
         />
       ) : (
@@ -31,22 +42,35 @@ export function SignUpForm() {
           name="adminCode"
           label="Код администратора"
           type="password"
+          placeholder="Код от владельца платформы"
           autoComplete="off"
         />
       )}
       <div className={FORM_GRID}>
-        <ControlledField control={control} name="password" label="Пароль" type="password" autoComplete="new-password" />
+        <ControlledField
+          control={control}
+          name="password"
+          label="Пароль"
+          type="password"
+          placeholder={`Минимум ${MIN_PASSWORD_LENGTH} символов`}
+          autoComplete="new-password"
+        />
         <ControlledField
           control={control}
           name="confirmPassword"
           label="Повторите пароль"
           type="password"
+          placeholder="Ещё раз"
           autoComplete="new-password"
         />
       </div>
-      {error && <p className={ERROR_BOX}>{error}</p>}
-      <Button type="submit" variant="primary" disabled={formState.isSubmitting}>
-        {formState.isSubmitting ? "Создаём аккаунт…" : "Зарегистрироваться"}
+      <Button
+        type="submit"
+        variant="primary"
+        className={AUTH_SUBMIT_BUTTON}
+        disabled={formState.isSubmitting}
+      >
+        {formState.isSubmitting ? "Создаём аккаунт…" : "Создать аккаунт"}
       </Button>
     </form>
   );

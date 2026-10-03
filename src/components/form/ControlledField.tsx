@@ -33,7 +33,7 @@ export function ControlledField<T extends FieldValues>({
   label: string;
   type?: ControlledFieldType;
   options?: (string | SelectOption)[];
-  /** For selects: adds an empty-value option with this label. */
+  /** Input hint; for selects it also adds an empty-value option with this label. */
   placeholder?: string;
   autoComplete?: string;
 }) {
@@ -67,6 +67,7 @@ export function ControlledField<T extends FieldValues>({
             ) : type === "password" ? (
               <PasswordInput
                 {...common}
+                placeholder={placeholder}
                 autoComplete={autoComplete}
                 onChange={(e) => field.onChange(e.target.value)}
               />
@@ -74,6 +75,7 @@ export function ControlledField<T extends FieldValues>({
               <Input
                 {...common}
                 type={type}
+                placeholder={placeholder}
                 autoComplete={autoComplete}
                 step={type === "number" ? "any" : undefined}
                 onChange={(e) => field.onChange(e.target.value)}

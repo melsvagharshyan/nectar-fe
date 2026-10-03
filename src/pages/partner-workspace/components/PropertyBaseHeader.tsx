@@ -13,8 +13,8 @@ export function PropertyBaseHeader({
   model: PartnerWorkspaceModel;
 }) {
   return (
-    <div>
-      <div className={HEAD}>
+    <div className="border-b border-line pb-14">
+      <div className={cn(HEAD, "border-b-0 pb-10")}>
         <h2 className={EYEBROW}>База объектов · Ереван</h2>
         <div className="flex gap-2 rounded-[10px] bg-fill p-3">
           <Button
@@ -46,7 +46,7 @@ export function PropertyBaseHeader({
         ]}
         value={m.matching ? "matching" : "all"}
         onChange={(id) => m.setMatching(id === "matching")}
-        classNames={{ root: "mx-14 mt-14 mb-0 gap-6" }}
+        classNames={{ root: "gap-6 px-16" }}
       />
     </div>
   );

@@ -14,9 +14,10 @@ import {
   useUploadImageMutation,
 } from "../../../api/records-api-ts/recordsApi";
 import { useDemo } from "../../../app/DemoProvider";
+import { notify } from "../../../components/toaster";
 import { roleFromHash } from "../../../utils/helpers";
 import { useDirtyClose } from "../../../utils/hooks";
-import { SAVED_MESSAGES } from "./constants";
+import { MAX_IMAGE_MB, SAVED_MESSAGES } from "./constants";
 import {
   buildPreview,
   buildPropertyDefaults,
@@ -30,26 +31,39 @@ import { createPropertySchema } from "./validations";
 function useMediaUpload(form: UseFormReturn<PropertyFormValues>) {
   const [uploadImage] = useUploadImageMutation();
   const [uploading, setUploading] = useState(false);
-  const [uploadError, setUploadError] = useState<string>();
 
-  const upload = async (files: File[]) => {
+  const upload = async (picked: File[]) => {
+    const files = picked.filter((f) => f.size <= MAX_IMAGE_MB * 1024 * 1024);
+    const tooLarge = picked.filter((f) => !files.includes(f));
+    if (tooLarge.length)
+      notify.error("Фото слишком большое", {
+        description: `${tooLarge.map((f) => f.name).join(", ")} — максимум ${MAX_IMAGE_MB} МБ на файл`,
+      });
+    if (!files.length) return;
     setUploading(true);
-    setUploadError(undefined);
+    let uploaded = 0;
     for (const file of files) {
       const result = await uploadImage(file);
       if (result.error) {
-        setUploadError(getApiErrorMessage(result.error));
+        notify.error("Фото не загружено", {
+          description: `${file.name}: ${getApiErrorMessage(result.error)}`,
+        });
         break;
       }
+      uploaded += 1;
       form.setValue("media", [...form.getValues("media"), result.data.url], {
         shouldDirty: true,
         shouldValidate: form.formState.isSubmitted,
       });
     }
     setUploading(false);
+    if (uploaded)
+      notify.success(uploaded === 1 ? "Фото загружено" : "Фото загружены", {
+        description: `Добавлено в галерею объекта: ${uploaded}`,
+      });
   };
 
-  return { upload, uploading, uploadError };
+  return { upload, uploading };
 }
 
 export function useObjectEditor({
@@ -97,7 +111,9 @@ export function useObjectEditor({
       ? await updateProperty({ id: propertyId, body })
       : await createProperty(body);
     if (result.error) {
-      form.setError("root.server", { message: getApiErrorMessage(result.error) });
+      notify.error(propertyId ? "Не удалось сохранить объект" : "Не удалось создать объект", {
+        description: getApiErrorMessage(result.error),
+      });
       return;
     }
     dirtyClose.finish();
@@ -122,7 +138,6 @@ export function useObjectEditor({
     unavailable: isEditorUnavailable(role, propertyId, property),
     readonly: property?.availability === "sold",
     saving: form.formState.isSubmitting,
-    serverError: form.formState.errors.root?.server?.message,
     media,
     dirtyClose,
     tab,

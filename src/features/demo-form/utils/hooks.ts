@@ -13,6 +13,7 @@ import {
   useUpdateRequestMutation,
 } from "../../../api/records-api-ts/recordsApi";
 import { useDemo } from "../../../app/DemoProvider";
+import { notify } from "../../../components/toaster";
 import { TYPES_WITHOUT_ROOMS } from "../../../utils/constants";
 import { roleFromHash } from "../../../utils/helpers";
 import { useDirtyClose } from "../../../utils/hooks";
@@ -97,7 +98,9 @@ export function useDemoForm(props: DemoFormProps) {
   const submit = form.handleSubmit(async (values) => {
     const error = await save(values);
     if (error) {
-      form.setError("root.server", { message: error });
+      notify.error(id ? "Не удалось сохранить изменения" : "Не удалось создать запись", {
+        description: error,
+      });
       return;
     }
     dirtyClose.finish();

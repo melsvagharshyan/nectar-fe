@@ -18,3 +18,14 @@ export const RESET_PARTNER_FILTERS: PartnerRequestFilters = {
   search: "",
   filter: "all",
 };
+
+export const DRAFT_TOASTS = {
+  added: {
+    title: "Добавлено в подборку",
+    description: "Отправьте подборку брокеру, когда будете готовы",
+  },
+  removed: {
+    title: "Убрано из подборки",
+    description: "Объект можно добавить снова в любой момент",
+  },
+};

@@ -3,8 +3,11 @@ import { settled } from "../settled";
 import { signedIn, userRefreshed } from "./authSlice";
 import type {
   AuthResponse,
+  AvatarUploadResponse,
+  ChangePasswordRequest,
   SignInRequest,
   SignUpRequest,
+  UpdateProfileRequest,
   UserDto,
 } from "./types";
 
@@ -40,6 +43,28 @@ export const authApi = api.injectEndpoints({
         if (data) dispatch(userRefreshed(data));
       },
     }),
+
+    updateProfile: build.mutation<UserDto, UpdateProfileRequest>({
+      query: (body) => ({ url: `${base}/me`, method: "PATCH", body }),
+      // The account owner also appears in the company directory of the workspace.
+      invalidatesTags: ["Workspace"],
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        const data = await settled(queryFulfilled);
+        if (data) dispatch(userRefreshed(data));
+      },
+    }),
+
+    changePassword: build.mutation<void, ChangePasswordRequest>({
+      query: (body) => ({ url: `${base}/password`, method: "POST", body }),
+    }),
+
+    uploadAvatar: build.mutation<AvatarUploadResponse, File>({
+      query: (file) => {
+        const body = new FormData();
+        body.append("file", file);
+        return { url: "/uploads/avatar", method: "POST", body };
+      },
+    }),
   }),
 });
 
@@ -48,4 +73,7 @@ export const {
   useSignUpMutation,
   useSignOutMutation,
   useGetMeQuery,
+  useUpdateProfileMutation,
+  useChangePasswordMutation,
+  useUploadAvatarMutation,
 } = authApi;

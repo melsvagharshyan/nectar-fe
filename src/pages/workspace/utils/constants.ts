@@ -26,3 +26,22 @@ export const DEFAULT_OFFER_FILTERS: OfferFilters = {
   rooms: "",
   sort: "match",
 };
+
+export const OFFER_TOASTS = {
+  booked: {
+    title: "Объект забронирован",
+    description: "Он появится в передаче в CRM",
+  },
+  unbooked: {
+    title: "Бронь снята",
+    description: "Объект остался в списке предложений",
+  },
+  rejected: {
+    title: "Объект отклонён",
+    description: "Партнёр увидит, что вариант не подошёл",
+  },
+  restored: {
+    title: "Объект возвращён",
+    description: "Он снова в списке предложений",
+  },
+};

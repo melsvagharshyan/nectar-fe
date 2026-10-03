@@ -2,7 +2,7 @@ import { useState } from "react";
 import { closePanel } from "../../../app/router";
 import { activeTransfer, selectedOffers } from "../../../demo/selectors";
 import { Overlay, OverlayFooter } from "../../../components/ui";
-import { cn, formatDate, money } from "../../../utils/helpers";
+import { formatDate, money } from "../../../utils/helpers";
 import { clientOf, companyNameOf } from "../utils/helpers";
 import { usePanelContext } from "../utils/hooks";
 import type {
@@ -13,7 +13,7 @@ import type {
 import { DeniedNotice } from "./DeniedNotice";
 import { TransferActions } from "./TransferActions";
 import { TransferConfirmDialog } from "./TransferConfirmDialog";
-import { ERROR_BOX, NOTICE, RECORD } from "../../../utils/styles";
+import { NOTICE, RECORD } from "../../../utils/styles";
 
 export function TransferPanel({ role, toast }: PanelProps) {
   const { state, dispatch, actor, params, request } = usePanelContext(role);
@@ -37,7 +37,8 @@ export function TransferPanel({ role, toast }: PanelProps) {
       actor,
       requestId: params.requestId,
     });
-    if (!error) toast("Запрос передан в CRM");
+    if (!error)
+      toast("Запрос передан в CRM", "Администратор проведёт сделку или вернёт запрос");
   };
 
   const confirm = async (values: TransferConfirmValues) => {
@@ -55,7 +56,8 @@ export function TransferPanel({ role, toast }: PanelProps) {
     );
     setConfirmMode(null);
     if (error) return;
-    toast(isSold ? "Сделка завершена" : "Запрос возвращён в работу");
+    if (isSold) toast("Сделка завершена", "Объект отмечен как проданный");
+    else toast("Запрос возвращён в работу", "Брокер снова может выбирать объекты");
     closePanel();
   };
 
@@ -93,7 +95,6 @@ export function TransferPanel({ role, toast }: PanelProps) {
                 <span>{money(p.price)}</span>
               </div>
             ))}
-            {state.error && <p className={cn(ERROR_BOX, "mt-20")}>{state.error}</p>}
             <OverlayFooter>
               <TransferActions
                 role={role}

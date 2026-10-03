@@ -67,7 +67,8 @@ export const SAVED_MESSAGES = {
 
 export const PREVIEW_CARD = "w-full";
 
-export const PREVIEW_CARD_EMBEDDED = "w-400 max-w-full";
+export const PREVIEW_CARD_EMBEDDED =
+  "w-520 max-w-full shadow-[0_20px_50px_-30px_rgb(15_23_42/0.25)]";
 
 export const EMPTY_PROPERTY_FORM_VALUES: PropertyFormValues = {
   type: "",
@@ -91,4 +92,11 @@ export const EMPTY_PROPERTY_FORM_VALUES: PropertyFormValues = {
   building: "",
   media: [],
   amenities: [],
+};
+
+export const MAX_IMAGE_MB = 8;
+
+export const MEDIA_UPLOAD_HINT = {
+  empty: `Перетащите файлы сюда или нажмите, чтобы выбрать. JPG, PNG, WEBP · до ${MAX_IMAGE_MB} МБ. Первое фото станет обложкой`,
+  more: `Перетащите сюда или нажмите · JPG, PNG, WEBP до ${MAX_IMAGE_MB} МБ`,
 };

@@ -61,7 +61,7 @@ const COMPACT: CardStyles = {
 
 const EDITOR: CardStyles = {
   ...COMPACT,
-  media: "relative h-220 shrink-0 overflow-hidden bg-fill",
+  media: "relative h-300 shrink-0 overflow-hidden bg-fill max-md:h-220",
   description:
     "mt-6 line-clamp-2 border-l-2 border-accent-edge pl-10 text-[12px] leading-[1.55] text-muted [&_u]:no-underline [&_u]:font-semibold [&_u]:text-ink-soft",
 };

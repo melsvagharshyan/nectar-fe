@@ -1,29 +1,20 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { api } from "../../api/api";
 import { authApi } from "../../api/auth-api-ts/authApi";
 import { signedOut } from "../../api/auth-api-ts/authSlice";
 import { getApiErrorMessage } from "../../api/errors";
 import { useAppDispatch, useAppSelector } from "../../api/store";
 import { workspaceApi } from "../../api/workspace-api-ts/workspaceApi";
+import { notify } from "../../components/toaster";
 import { visibleEvents } from "../../demo/selectors";
 import type { DemoAction, Role } from "../../demo/types";
 import { actorForRole } from "../../utils/helpers";
 import { useDemo } from "../DemoProvider";
-import { AUTH_ROUTES, TOAST_DURATION_MS } from "./constants";
+import { ACTION_ERROR_TITLES, AUTH_ROUTES } from "./constants";
 import { redirect } from "../router";
 
 export interface ActionResult {
   error?: string;
-}
-
-export function useToast() {
-  const [message, setMessage] = useState("");
-  useEffect(() => {
-    if (!message) return;
-    const id = setTimeout(() => setMessage(""), TOAST_DURATION_MS);
-    return () => clearTimeout(id);
-  }, [message]);
-  return { message, showToast: setMessage };
 }
 
 export function useUnreadCount(role: Role) {
@@ -43,6 +34,7 @@ export function useSignOut() {
     dispatch(signedOut());
     dispatch(api.util.resetApiState());
     redirect(AUTH_ROUTES.signIn);
+    notify.info("Вы вышли из аккаунта", { description: "До скорой встречи!" });
   }, [dispatch]);
 }
 
@@ -110,6 +102,7 @@ export function useWorkspaceDispatch() {
       if (!result.error) return {};
       const message = getApiErrorMessage(result.error);
       setError(message);
+      notify.error(ACTION_ERROR_TITLES[action.type], { description: message });
       return { error: message };
     },
     [appDispatch],

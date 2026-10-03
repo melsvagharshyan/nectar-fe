@@ -12,8 +12,21 @@ export interface SignUpFormValues {
   confirmPassword: string;
 }
 
+export type SignUpStep = "role" | "details";
+
+export interface SignUpStepCopy {
+  title: string;
+  subtitle: string;
+}
+
 export interface RoleOptionDetails {
   icon: IconName;
+  title: string;
+  tag: string;
   description: string;
-  companyLabel?: string;
+  phonePlaceholder: string;
+  company?: {
+    label: string;
+    placeholder: string;
+  };
 }

@@ -9,7 +9,7 @@ import { RequestFields } from "./components/RequestFields";
 import { DEMO_FORM_ID, KIND_TITLES } from "./utils/constants";
 import { useDemoForm } from "./utils/hooks";
 import type { DemoFormProps } from "./utils/types";
-import { ERROR_BOX, FORM, NOTICE } from "../../utils/styles";
+import { FORM, NOTICE } from "../../utils/styles";
 
 export type { DemoFormKind } from "./utils/types";
 
@@ -18,7 +18,7 @@ export function DemoForm(props: DemoFormProps) {
   const { form, records, dirtyClose, submit, isMapOpen, setMapOpen } =
     useDemoForm(props);
   const districts = useWatch({ control: form.control, name: "districts" });
-  const { isSubmitting, errors } = form.formState;
+  const { isSubmitting } = form.formState;
 
   return (
     <>
@@ -42,11 +42,6 @@ export function DemoForm(props: DemoFormProps) {
                 <CompanyFields isNew={!id} />
               ) : (
                 <EmployeeFields />
-              )}
-              {errors.root?.server && (
-                <p className={ERROR_BOX} role="alert">
-                  {errors.root.server.message}
-                </p>
               )}
               <OverlayFooter>
                 <Button onClick={dirtyClose.close}>Отмена</Button>
