@@ -1,33 +1,54 @@
 import { useEffect, useState } from "react";
 const subscribers = new Set<() => void>();
-let acceptedHash = location.hash;
-const handleHash = () => {
-  const target = location.hash;
-  if (target === acceptedHash) return;
-  const event = new CustomEvent("nectar:navigate", {
-    cancelable: true,
-    detail: { target },
-  });
-  if (!window.dispatchEvent(event)) {
-    history.replaceState(null, "", acceptedHash || "#/");
+const currentUrl = () => location.pathname + location.search;
+const notify = () => subscribers.forEach((fn) => fn());
+
+if (location.hash.startsWith("#/")) {
+  history.replaceState(null, "", location.hash.slice(1));
+}
+
+let acceptedUrl = currentUrl();
+
+const allowNavigation = (target: string) =>
+  window.dispatchEvent(
+    new CustomEvent("nectar:navigate", { cancelable: true, detail: { target } }),
+  );
+
+const handlePopState = () => {
+  const target = currentUrl();
+  if (target === acceptedUrl) return;
+  if (!allowNavigation(target)) {
+    history.pushState(null, "", acceptedUrl);
     return;
   }
-  acceptedHash = target;
-  subscribers.forEach((notify) => notify());
+  acceptedUrl = target;
+  notify();
 };
-window.addEventListener("hashchange", handleHash);
+window.addEventListener("popstate", handlePopState);
 if (import.meta.hot)
   import.meta.hot.dispose(() =>
-    window.removeEventListener("hashchange", handleHash),
+    window.removeEventListener("popstate", handlePopState),
   );
+
 export function readRoute() {
-  const [path, query = ""] = location.hash.slice(1).split("?");
-  return { path: path || "/", params: new URLSearchParams(query) };
+  return { path: location.pathname || "/", params: new URLSearchParams(location.search) };
 }
+
+/** Pushes a URL without asking the unsaved-changes guard. */
+export function go(target: string) {
+  if (target === currentUrl()) return;
+  history.pushState(null, "", target);
+  acceptedUrl = target;
+  notify();
+}
+
 /** Replaces the current route without a history entry or the unsaved-changes guard. */
 export function redirect(path: string) {
-  location.replace("#" + path);
+  history.replaceState(null, "", path);
+  acceptedUrl = currentUrl();
+  notify();
 }
+
 export function navigate(
   path: string,
   params: Record<string, string | undefined> = {},
@@ -35,13 +56,10 @@ export function navigate(
   const q = new URLSearchParams(
     Object.entries(params).filter((x): x is [string, string] => !!x[1]),
   );
-  const target = "#" + path + (q.size ? "?" + q : "");
-  const event = new CustomEvent("nectar:navigate", {
-    cancelable: true,
-    detail: { target },
-  });
-  if (window.dispatchEvent(event)) location.hash = target;
+  const target = path + (q.size ? "?" + q : "");
+  if (allowNavigation(target)) go(target);
 }
+
 export function useRoute() {
   const [route, set] = useState(readRoute);
   useEffect(() => {
@@ -53,6 +71,7 @@ export function useRoute() {
   }, []);
   return route;
 }
+
 export function panel(
   name: string,
   extra: Record<string, string | undefined> = {},
@@ -67,6 +86,7 @@ export function panel(
     ...extra,
   });
 }
+
 export function closePanel() {
   const r = readRoute();
   r.params.delete("panel");

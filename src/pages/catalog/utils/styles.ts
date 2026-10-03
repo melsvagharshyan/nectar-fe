@@ -56,6 +56,10 @@ export const CATALOG_ID = "whitespace-nowrap font-code text-[12px] text-faint";
 
 export const CATALOG_THUMB = "h-60 w-88 rounded-[10px] object-cover";
 
-export const TABLE_ACTIONS = "flex gap-6 max-[1025px]:flex-wrap";
+export const ACTIONS_TRIGGER =
+  "size-32 min-h-0 min-w-0 rounded-[8px] p-0 text-muted hover:not-disabled:bg-fill hover:not-disabled:text-ink";
 
-export const TABLE_ACTION_BUTTON = "rounded-[8px] px-10 py-6 text-[12px] max-lg:text-[11px]";
+export const ACTIONS_TRIGGER_OPEN = "bg-fill text-ink";
+
+export const ACTIONS_MENU =
+  "min-w-180 !rounded-[12px] !border !border-solid !border-line !p-6 [&_.ant-dropdown-menu-item]:!gap-4 [&_.ant-dropdown-menu-item]:!rounded-[8px] [&_.ant-dropdown-menu-item]:!py-8";

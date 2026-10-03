@@ -15,7 +15,7 @@ export function KitHeader() {
         {KIT_SECTIONS.map((section) => (
           <a
             key={section.id}
-            href="#/ui-kit"
+            href={`#${section.id}`}
             onClick={(e) => {
               e.preventDefault();
               scrollToSection(section.id);

@@ -9,6 +9,11 @@ export const CATALOG_STATUS_TABS: { id: CatalogStatus; label: string }[] = [
   { id: "sold", label: "Продано / Архив" },
 ];
 
+export const PROPERTY_ACTION_KEYS = {
+  view: "view",
+  edit: "edit",
+} as const;
+
 export const CATALOG_ROOM_OPTIONS = [
   { value: "", label: "Все" },
   ...ROOM_FILTER_OPTIONS.map((rooms) => ({

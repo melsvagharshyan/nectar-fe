@@ -1,19 +1,12 @@
 import type { TableColumnsType } from "antd";
-import { panel } from "../../../app/router";
-import { Badge, Button, DataTable } from "../../../components/ui";
+import { Badge, DataTable } from "../../../components/ui";
 import { propertyInterest } from "../../../demo/selectors";
 import type { DemoState, Role } from "../../../demo/types";
 import { coverImage, money } from "../../../utils/helpers";
-import { openPropertyEditor } from "../../../utils/navigation";
 import { ownerCompanyId, propertyParameters } from "../utils/helpers";
 import type { CatalogProperty } from "../utils/types";
-import {
-  CATALOG_ID,
-  CATALOG_PRICE,
-  CATALOG_THUMB,
-  TABLE_ACTION_BUTTON,
-  TABLE_ACTIONS,
-} from "../utils/styles";
+import { CATALOG_ID, CATALOG_PRICE, CATALOG_THUMB } from "../utils/styles";
+import { PropertyActionsMenu } from "./PropertyActionsMenu";
 
 export function CatalogTable({
   state,
@@ -102,26 +95,11 @@ export function CatalogTable({
         `${offers.filter((o) => o.propertyId === p.id).length} / ${propertyInterest(state, p.id)}`,
     },
     {
-      title: "Действия",
+      title: <span className="sr-only">Действия</span>,
       key: "actions",
-      render: (_, p) => (
-        <div className={TABLE_ACTIONS}>
-          <Button
-            className={TABLE_ACTION_BUTTON}
-            onClick={() => panel("property", { object: p.id })}
-          >
-            Просмотр
-          </Button>
-          {role !== "broker" && p.availability !== "sold" && (
-            <Button
-              className={TABLE_ACTION_BUTTON}
-              onClick={() => openPropertyEditor(role, p.id)}
-            >
-              Редактировать
-            </Button>
-          )}
-        </div>
-      ),
+      width: 56,
+      align: "right",
+      render: (_, p) => <PropertyActionsMenu property={p} role={role} />,
     },
   ];
 
