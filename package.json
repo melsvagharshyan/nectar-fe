@@ -20,6 +20,7 @@
     "@hookform/resolvers": "^5.9.1",
     "@reduxjs/toolkit": "^2.13.0",
     "antd": "^6.6.5",
+    "maplibre-gl": "^6.11.2",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-hook-form": "^7.89.0",

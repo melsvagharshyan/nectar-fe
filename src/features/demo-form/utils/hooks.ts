@@ -20,6 +20,7 @@ import { useDirtyClose } from "../../../utils/hooks";
 import { SAVED_MESSAGES } from "./constants";
 import {
   buildDemoFormDefaults,
+  buildDistrictStats,
   resolveDemoFormRecords,
   toClientPayload,
   toCompanyPayload,
@@ -71,6 +72,11 @@ function useSaveRecord({ kind, id }: DemoFormProps, records: DemoFormRecords) {
     const result = await call();
     return result.error ? getApiErrorMessage(result.error) : undefined;
   };
+}
+
+export function useDistrictStats() {
+  const [state] = useDemo();
+  return useMemo(() => buildDistrictStats(state.properties), [state.properties]);
 }
 
 export function useDemoForm(props: DemoFormProps) {

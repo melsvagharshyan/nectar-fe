@@ -4,7 +4,8 @@ import type {
   EmployeePayload,
   RequestPayload,
 } from "../../../api/records-api-ts/types";
-import type { DemoState, Role } from "../../../demo/types";
+import type { DistrictStatsMap } from "../../../components/district-map";
+import type { DemoState, Property, Role } from "../../../demo/types";
 import { cleanNumber, currentCompanyId, numeric } from "../../../utils/helpers";
 import { NOT_IMPORTANT } from "./constants";
 import type {
@@ -12,6 +13,19 @@ import type {
   DemoFormRecords,
   DemoFormValues,
 } from "./types";
+
+/** Published objects per district with the cheapest price, for the district map. */
+export function buildDistrictStats(properties: Property[]): DistrictStatsMap {
+  return properties.reduce<DistrictStatsMap>((stats, p) => {
+    if (p.availability !== "active") return stats;
+    const current = stats[p.district] ?? { count: 0, minPrice: null };
+    stats[p.district] = {
+      count: current.count + 1,
+      minPrice: current.minPrice === null ? p.price : Math.min(current.minPrice, p.price),
+    };
+    return stats;
+  }, {});
+}
 
 export function resolveDemoFormRecords(
   state: DemoState,

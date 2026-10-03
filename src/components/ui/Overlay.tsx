@@ -41,7 +41,8 @@ export function Overlay({
           "drawer flex h-full w-[min(580px,100%)] flex-col border-l border-line bg-surface text-ink shadow-drawer outline-none",
           wide && "wide w-[min(840px,100%)]",
           modal &&
-            "h-auto max-h-[90dvh] w-[min(580px,100%)] overflow-hidden rounded-[18px] border shadow-raised",
+            "h-auto max-h-[90dvh] overflow-hidden rounded-[18px] border shadow-raised",
+          modal && (wide ? "w-[min(980px,100%)]" : "w-[min(580px,100%)]"),
         )}
       >
         <div className="drawer-head flex shrink-0 items-center justify-between gap-15 border-b border-line px-24 py-18 max-xs:px-18 max-xs:py-14">

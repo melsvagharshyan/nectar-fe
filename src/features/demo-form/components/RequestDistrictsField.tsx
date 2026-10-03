@@ -27,7 +27,7 @@ export function RequestDistrictsField({ onOpenMap }: { onOpenMap: () => void }) 
             aria-invalid={!!fieldState.error}
             onClick={onOpenMap}
           >
-            <Icon name="pin" /> Выбрать на схеме
+            <Icon name="pin" /> Выбрать на карте
           </Button>
         </>
       )}

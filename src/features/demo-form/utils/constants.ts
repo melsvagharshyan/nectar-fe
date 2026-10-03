@@ -10,6 +10,17 @@ export const KIND_TITLES: Record<DemoFormKind, string> = {
 
 export const DEMO_FORM_ID = "record-form";
 
+export const DISTRICT_ITEM =
+  "w-full justify-between gap-8 rounded-[10px] border-transparent px-10 py-7 text-left text-[13px] font-medium";
+
+export const DISTRICT_ITEM_SELECTED =
+  "border-accent-edge bg-accent-tint text-accent-text hover:not-disabled:border-accent-edge";
+
+export const DISTRICT_CHECK =
+  "grid size-16 shrink-0 place-items-center rounded-[5px] border border-line-strong";
+
+export const DISTRICT_CHECK_SELECTED = "border-accent bg-accent text-white";
+
 export const SAVED_MESSAGES: Record<DemoFormKind, [created: string, updated: string]> = {
   client: ["Клиент добавлен", "Клиент обновлён"],
   request: ["Запрос создан", "Запрос обновлён"],

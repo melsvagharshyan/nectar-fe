@@ -1,15 +1,14 @@
+import { Suspense } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { DistrictScheme } from "../../../components/district-scheme";
+import { DistrictMap } from "../../../components/district-map";
 import { Button, Overlay, OverlayFooter } from "../../../components/ui";
-import { DISTRICTS } from "../../../utils/constants";
 import { toggleValue } from "../../../utils/helpers";
-import { CHIPS, NOTICE } from "../../../utils/styles";
+import { useDistrictStats } from "../utils/hooks";
+import { DistrictPickerList } from "./DistrictPickerList";
 
 interface DistrictMapValues {
   selection: string[];
 }
-
-const LAST_ROW_INDEX = 6;
 
 export function DistrictMapDialog({
   selected,
@@ -20,6 +19,7 @@ export function DistrictMapDialog({
   onApply: (districts: string[]) => void;
   onClose: () => void;
 }) {
+  const stats = useDistrictStats();
   const { control, setValue, handleSubmit } = useForm<DistrictMapValues>({
     defaultValues: { selection: selected },
   });
@@ -32,33 +32,31 @@ export function DistrictMapDialog({
   });
 
   return (
-    <Overlay title="Схема районов" modal onClose={onClose}>
-      <p className={NOTICE}>
-        Условная схема для выбора района. Не карта и не точные географические
-        границы.
+    <Overlay title="Районы на карте" modal wide onClose={onClose}>
+      <p className="mt-0 mb-14 text-[13px] text-muted">
+        Нажмите на район, чтобы добавить его в запрос. Наведите курсор — покажем, сколько
+        объектов уже есть в базе.
       </p>
-      <DistrictScheme selected={selection} onToggle={toggle} />
-      <div className={CHIPS}>
-        {DISTRICTS.map((district, i) => (
-          <Button
-            key={district}
-            selected={selection.includes(district)}
-            style={{
-              minHeight: 72,
-              gridColumn: i === LAST_ROW_INDEX ? "2" : undefined,
-            }}
-            aria-pressed={selection.includes(district)}
-            onClick={() => toggle(district)}
-          >
-            {district}
-          </Button>
-        ))}
+      <div className="grid gap-16 lg:grid-cols-[minmax(0,1fr)_220px]">
+        <Suspense
+          fallback={
+            <div className="grid h-460 place-items-center rounded-[14px] border border-line bg-fill text-[13px] text-muted max-md:h-340">
+              Загружаем карту…
+            </div>
+          }
+        >
+          <DistrictMap selected={selection} onToggle={toggle} stats={stats} />
+        </Suspense>
+        <DistrictPickerList selected={selection} stats={stats} onToggle={toggle} />
       </div>
       <OverlayFooter>
-        <Button onClick={() => setValue("selection", [])}>Очистить</Button>
+        <Button onClick={() => setValue("selection", [])} disabled={!selection.length}>
+          Очистить
+        </Button>
+        <span className="flex-1" />
         <Button onClick={onClose}>Отмена</Button>
         <Button variant="primary" onClick={apply}>
-          Применить выбор
+          Применить{selection.length ? ` (${selection.length})` : ""}
         </Button>
       </OverlayFooter>
     </Overlay>
