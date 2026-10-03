@@ -137,7 +137,6 @@ export interface DemoState {
   transfers: Transfer[];
   drafts: Record<string, string[]>;
   events: DemoEvent[];
-  readEventIds: string[];
   error?: string;
 }
 export type DemoAction =

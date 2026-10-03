@@ -25,6 +25,7 @@ export function PropertyGallery({
       <img
         className="m-auto block max-h-[65vh] max-w-full object-contain"
         src={coverImage(property.media, photo)}
+        decoding="async"
         alt={property.title + " · фото " + (photo + 1)}
       />
       {count > 1 && (

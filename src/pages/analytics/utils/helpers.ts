@@ -1,11 +1,5 @@
-import type { Actor, DemoState, Role } from "../../../demo/types";
-import { currentCompanyId } from "../../../utils/helpers";
+import type { Role } from "../../../demo/types";
 import type { MetricCard, MetricView, Metrics } from "./types";
-
-export const analyticsActor = (role: Role): Actor => ({
-  role,
-  companyId: role === "broker" ? currentCompanyId() : undefined,
-});
 
 export const metricCards = (role: Role, m: Metrics): MetricCard[] =>
   role === "broker"
@@ -30,16 +24,6 @@ export const metricTarget = (role: Role, view: MetricView) =>
         path: "/broker/workspace",
         params: view === "crm" ? { stage: "crm" } : {},
       };
-
-export const scopedRequests = (state: DemoState, role: Role) =>
-  state.requests.filter(
-    (r) =>
-      role === "admin" ||
-      state.clients.some(
-        (c) =>
-          c.id === r.clientId && c.companyId === currentCompanyId(),
-      ),
-  );
 
 export const sortedDistricts = (districts: Record<string, number>) =>
   Object.entries(districts).sort((a, b) => b[1] - a[1]);

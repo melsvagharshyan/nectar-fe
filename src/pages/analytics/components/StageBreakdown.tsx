@@ -1,15 +1,15 @@
 import { Badge } from "../../../components/ui";
-import type { Request } from "../../../demo/types";
+import type { RequestStage } from "../../../demo/types";
 import { ANALYTICS_STAGES } from "../utils/constants";
 import { crmShare } from "../utils/helpers";
 import type { Metrics } from "../utils/types";
 import { BOX, RECORD } from "../../../utils/styles";
 
 export function StageBreakdown({
-  requests,
+  stages,
   metrics: m,
 }: {
-  requests: Request[];
+  stages: Partial<Record<RequestStage, number>>;
   metrics: Metrics;
 }) {
   return (
@@ -18,7 +18,7 @@ export function StageBreakdown({
       {ANALYTICS_STAGES.map((stage) => (
         <div className={RECORD} key={stage}>
           <Badge value={stage} />
-          <strong>{requests.filter((r) => r.stage === stage).length}</strong>
+          <strong>{stages[stage] ?? 0}</strong>
         </div>
       ))}
       <p className="text-muted mt-20">

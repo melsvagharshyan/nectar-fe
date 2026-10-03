@@ -84,3 +84,9 @@ export const REQUEST_STAGES: RequestStage[] = [
 export const OPEN_REQUEST_STAGES: string[] = ["in_progress", "has_offers"];
 
 export const ROOM_FILTER_OPTIONS = ["1", "2", "3", "4"];
+
+export const SEARCH_DEBOUNCE_MS = 300;
+
+export const SEARCH_KEYS = ["search", "query"] as const;
+
+export const PAGE_SIZE = 20;

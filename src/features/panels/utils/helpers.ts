@@ -1,4 +1,4 @@
-import type { DemoState, Role } from "../../../demo/types";
+import type { DemoState } from "../../../demo/types";
 import type { DemoFormKind } from "../../demo-form";
 export const clientOf = (state: DemoState, clientId: string) =>
   state.clients.find((c) => c.id === clientId);
@@ -8,9 +8,6 @@ export const companyNameOf = (state: DemoState, companyId?: string) =>
 
 export const employeeNameOf = (state: DemoState, employeeId?: string) =>
   state.employees.find((e) => e.id === employeeId)?.name;
-
-export const isReadByRole = (state: DemoState, role: Role, eventId: string) =>
-  state.readEventIds.includes(role + ":" + eventId);
 
 export function formRecordId(
   kind: DemoFormKind,

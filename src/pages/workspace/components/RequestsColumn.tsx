@@ -1,6 +1,13 @@
 import { Controller } from "react-hook-form";
 import { panel } from "../../../app/router";
-import { Button, Count, Empty, Icon, Search } from "../../../components/ui";
+import {
+  Button,
+  Count,
+  Empty,
+  Icon,
+  InfiniteList,
+  Search,
+} from "../../../components/ui";
 import { cn } from "../../../utils/helpers";
 import { COLUMN, COLUMN_VISIBLE } from "../../../utils/styles";
 import type { WorkspaceModel } from "../utils/hooks";
@@ -27,7 +34,7 @@ export function RequestsColumn({
       <div className={HEAD}>
         <h2 className={COLUMN_TITLE}>
           Запросы
-          <Count className={COUNT_TONE}>{m.requests.length}</Count>
+          <Count className={COUNT_TONE}>{m.requestsPaging.total}</Count>
         </h2>
         {!admin && (
           <Button
@@ -55,7 +62,12 @@ export function RequestsColumn({
           )}
         />
       </div>
-      <div className={REQUEST_TABS}>
+      <InfiniteList
+        className={REQUEST_TABS}
+        hasMore={m.requestsPaging.hasMore}
+        loading={m.requestsPaging.loadingMore}
+        onLoadMore={m.requestsPaging.loadMore}
+      >
         {m.requests.map((r) => (
           <RequestTab
             key={r.id}
@@ -68,7 +80,7 @@ export function RequestsColumn({
             }}
           />
         ))}
-        {!m.requests.length && (
+        {!m.requests.length && !m.requestsPaging.loading && (
           <Empty
             text={
               m.requestForm.values.query
@@ -77,7 +89,7 @@ export function RequestsColumn({
             }
           />
         )}
-      </div>
+      </InfiniteList>
     </section>
   );
 }

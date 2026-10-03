@@ -1,49 +1,44 @@
 import { useState } from "react";
 import { closePanel } from "../../../app/router";
 import {
-  canSeeRequest,
-  requiresAttention,
-  visibleEvents,
-} from "../../../demo/selectors";
-import { Badge, Button, Empty, Overlay, Tabs } from "../../../components/ui";
+  Badge,
+  Button,
+  Empty,
+  InfiniteList,
+  Overlay,
+  Tabs,
+} from "../../../components/ui";
 import { EVENT_NAMES } from "../../../utils/constants";
-import { CRM_EVENT_TYPES, NOTIFICATION_FILTERS } from "../utils/constants";
-import { isReadByRole } from "../utils/helpers";
-import { usePanelContext } from "../utils/hooks";
+import { NOTIFICATION_FILTERS } from "../utils/constants";
+import { useNotificationFeed, usePanelContext } from "../utils/hooks";
 import type { NotificationFilter, PanelProps } from "../utils/types";
 import { RECORD } from "../../../utils/styles";
 
 export function NotificationsPanel({ role }: Pick<PanelProps, "role">) {
-  const { state, dispatch, actor, goToRequest } = usePanelContext(role);
+  const { dispatch, actor, goToRequest } = usePanelContext(role);
   const [filter, setFilter] = useState<NotificationFilter>("all");
-  const attentionRequests = state.requests.filter(
-    (r) => canSeeRequest(state, actor, r) && requiresAttention(state, r),
-  );
-  const events = visibleEvents(state, actor).filter(
-    (e) =>
-      filter !== "attention" &&
-      (filter !== "new" || !isReadByRole(state, role, e.id)) &&
-      (filter !== "crm" || CRM_EVENT_TYPES.includes(e.type)),
-  );
+  const feed = useNotificationFeed(filter);
   const isEmpty =
-    !events.length && (filter !== "attention" || !attentionRequests.length);
+    !feed.loading && !feed.events.length && !feed.attentionRequests.length;
 
   return (
     <Overlay title="Уведомления" onClose={closePanel}>
       <Tabs items={NOTIFICATION_FILTERS} value={filter} onChange={setFilter} />
-      {events
-        .slice()
-        .reverse()
-        .map((e) => (
+      <InfiniteList
+        hasMore={feed.hasMore}
+        loading={feed.loading || feed.loadingMore}
+        onLoadMore={feed.loadMore}
+      >
+        {feed.events.map((e) => (
           <div className={RECORD} key={e.id}>
             <div>
               <strong>{EVENT_NAMES[e.type]}</strong>
               <p className="text-muted">{e.requestId}</p>
-              {!isReadByRole(state, role, e.id) && <Badge value="Новое" />}
+              {!e.read && <Badge value="Новое" />}
             </div>
             <Button
               onClick={() => {
-                dispatch({ type: "READ_EVENT", actor, eventId: e.id });
+                if (!e.read) void dispatch({ type: "READ_EVENT", actor, eventId: e.id });
                 goToRequest(e.requestId);
               }}
             >
@@ -51,8 +46,7 @@ export function NotificationsPanel({ role }: Pick<PanelProps, "role">) {
             </Button>
           </div>
         ))}
-      {filter === "attention" &&
-        attentionRequests.map((r) => (
+        {feed.attentionRequests.map((r) => (
           <div className={RECORD} key={r.id}>
             <div>
               <strong>{r.id}</strong>
@@ -61,6 +55,7 @@ export function NotificationsPanel({ role }: Pick<PanelProps, "role">) {
             <Button onClick={() => goToRequest(r.id)}>Открыть</Button>
           </div>
         ))}
+      </InfiniteList>
       {isEmpty && <Empty text="Новых уведомлений нет" />}
     </Overlay>
   );

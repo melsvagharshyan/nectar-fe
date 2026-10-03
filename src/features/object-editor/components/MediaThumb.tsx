@@ -22,6 +22,8 @@ export function MediaThumb({
       <img
         src={mediaUrl(src)}
         alt={`Фото ${index + 1}`}
+        loading="lazy"
+        decoding="async"
         className="size-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
       />
       {isCover && (

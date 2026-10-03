@@ -1,6 +1,6 @@
 import type { TableColumnsType } from "antd";
 import { panel } from "../../../app/router";
-import { Button, DataTable } from "../../../components/ui";
+import { Button, DataTable, type TablePaging } from "../../../components/ui";
 import { offerPresentation } from "../../../demo/selectors";
 import type { DemoState, Offer } from "../../../demo/types";
 import { money } from "../../../utils/helpers";
@@ -9,9 +9,13 @@ import { companyName } from "../utils/helpers";
 export function AdminOffersTable({
   state,
   offers,
+  paging,
+  loading,
 }: {
   state: DemoState;
   offers: Offer[];
+  paging: TablePaging;
+  loading: boolean;
 }) {
   const propertyOf = (o: Offer) =>
     state.properties.find((x) => x.id === o.propertyId)!;
@@ -70,6 +74,8 @@ export function AdminOffersTable({
       rowKey="id"
       columns={columns}
       dataSource={offers}
+      paging={paging}
+      loading={loading}
       emptyText="Предложения не найдены"
     />
   );

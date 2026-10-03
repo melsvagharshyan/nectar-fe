@@ -6,6 +6,14 @@ import { setStoredUser } from "./session";
 import "./auth-api-ts/authApi";
 import "./workspace-api-ts/workspaceApi";
 import "./records-api-ts/recordsApi";
+import "./bootstrap-api-ts/bootstrapApi";
+import "./clients-api-ts/clientsApi";
+import "./requests-api-ts/requestsApi";
+import "./properties-api-ts/propertiesApi";
+import "./offers-api-ts/offersApi";
+import "./notifications-api-ts/notificationsApi";
+import "./analytics-api-ts/analyticsApi";
+import "./companies-api-ts/companiesApi";
 
 export const store = configureStore({
   reducer: {

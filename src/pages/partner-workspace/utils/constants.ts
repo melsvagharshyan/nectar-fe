@@ -1,5 +1,11 @@
 import type { SelectOption } from "../../../utils/types";
-import type { PartnerRequestFilters } from "./types";
+import type { PartnerRequestFilter, PartnerRequestFilters } from "./types";
+
+export const REQUEST_FILTER_PARAM: Record<PartnerRequestFilter, "open" | "mine" | "all"> = {
+  active: "open",
+  mine: "mine",
+  all: "all",
+};
 
 export const PARTNER_STEPS = ["Запросы", "Подборка", "Объекты"];
 

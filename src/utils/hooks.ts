@@ -12,6 +12,7 @@ import {
   type FieldValues,
 } from "react-hook-form";
 import { go } from "../app/router";
+import { SEARCH_DEBOUNCE_MS, SEARCH_KEYS } from "./constants";
 import { applyTheme, readTheme } from "./helpers";
 import type { Theme } from "./types";
 
@@ -38,13 +39,37 @@ export function useTheme() {
 const FOCUSABLE =
   'button:not(:disabled),input:not(:disabled),select,textarea,a[href],[tabindex="0"]';
 
+export function useDebouncedValue<T>(value: T, delay = SEARCH_DEBOUNCE_MS) {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setDebounced(value), delay);
+    return () => window.clearTimeout(timer);
+  }, [value, delay]);
+  return debounced;
+}
+
 export function useFilterForm<T extends FieldValues>(defaultValues: T) {
   const form = useForm<T>({
     defaultValues: defaultValues as DefaultValues<T>,
   });
   const watched = useWatch({ control: form.control });
-  const values: T = { ...defaultValues, ...watched };
+  const live: Record<string, unknown> = { ...defaultValues, ...watched };
+  const textKey = SEARCH_KEYS.find((key) => key in defaultValues);
+  const debouncedText = useDebouncedValue(textKey ? live[textKey] : undefined);
+  const values = (textKey ? { ...live, [textKey]: debouncedText } : live) as T;
   return { ...form, values };
+}
+
+/** Page number for a paged table; any filter change returns to the first page. */
+export function usePagedArgs<T extends object>(filters: T) {
+  const key = JSON.stringify(filters);
+  const [paged, setPaged] = useState({ key, page: 1 });
+  const page = paged.key === key ? paged.page : 1;
+  return {
+    page,
+    setPage: (next: number) => setPaged({ key, page: next }),
+    args: { ...filters, page },
+  };
 }
 
 export function useDirtyClose(dirty: boolean, onClose: () => void) {

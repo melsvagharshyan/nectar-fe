@@ -1,6 +1,6 @@
 import type { TableColumnsType } from "antd";
 import { panel } from "../../../app/router";
-import { Badge, Button, DataTable } from "../../../components/ui";
+import { Badge, Button, DataTable, type TablePaging } from "../../../components/ui";
 import type { DemoState, Request } from "../../../demo/types";
 import { money } from "../../../utils/helpers";
 import { companyName } from "../utils/helpers";
@@ -8,9 +8,13 @@ import { companyName } from "../utils/helpers";
 export function AdminRequestsTable({
   state,
   requests,
+  paging,
+  loading,
 }: {
   state: DemoState;
   requests: Request[];
+  paging: TablePaging;
+  loading: boolean;
 }) {
   const clientOf = (r: Request) =>
     state.clients.find((x) => x.id === r.clientId)!;
@@ -76,6 +80,8 @@ export function AdminRequestsTable({
       rowKey="id"
       columns={columns}
       dataSource={requests}
+      paging={paging}
+      loading={loading}
       emptyText="Запросы не найдены"
     />
   );

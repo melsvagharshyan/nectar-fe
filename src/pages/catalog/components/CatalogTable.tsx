@@ -1,5 +1,5 @@
 import type { TableColumnsType } from "antd";
-import { Badge, DataTable } from "../../../components/ui";
+import { Badge, DataTable, type TablePaging } from "../../../components/ui";
 import { propertyInterest } from "../../../demo/selectors";
 import type { DemoState, Role } from "../../../demo/types";
 import { coverImage, money } from "../../../utils/helpers";
@@ -13,11 +13,15 @@ export function CatalogTable({
   role,
   properties,
   offers,
+  paging,
+  loading,
 }: {
   state: DemoState;
   role: Role;
   properties: CatalogProperty[];
   offers: { propertyId: string }[];
+  paging: TablePaging;
+  loading: boolean;
 }) {
   const columns: TableColumnsType<CatalogProperty> = [
     {
@@ -30,7 +34,13 @@ export function CatalogTable({
       key: "photo",
       responsive: ["lg"],
       render: (_, p) => (
-        <img className={CATALOG_THUMB} src={coverImage(p.media)} alt={p.title} />
+        <img
+          className={CATALOG_THUMB}
+          src={coverImage(p.media)}
+          alt={p.title}
+          loading="lazy"
+          decoding="async"
+        />
       ),
     },
     {
@@ -109,6 +119,8 @@ export function CatalogTable({
       columns={columns}
       dataSource={properties}
       emptyText="Объекты не найдены"
+      paging={paging}
+      loading={loading}
     />
   );
 }

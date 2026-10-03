@@ -1,7 +1,5 @@
-import { api } from "../api";
-import { settled } from "../settled";
-import type { WorkspaceState } from "../workspace-api-ts/types";
-import { workspaceApi } from "../workspace-api-ts/workspaceApi";
+import { api, DATA_TAGS } from "../api";
+import type { MutationResult } from "../workspace-api-ts/types";
 import type {
   ClientPayload,
   CompanyPayload,
@@ -16,21 +14,14 @@ type Method = "POST" | "PATCH";
 
 export const recordsApi = api.injectEndpoints({
   endpoints: (build) => {
-    /** Writes respond with the refreshed workspace, which replaces the cache. */
     const write = <Arg>(
       method: Method,
       url: (arg: Arg) => string,
       body: (arg: Arg) => object,
     ) =>
-      build.mutation<WorkspaceState, Arg>({
+      build.mutation<MutationResult, Arg>({
         query: (arg) => ({ url: url(arg), method, body: body(arg) }),
-        async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
-          const data = await settled(queryFulfilled);
-          if (!data) return;
-          dispatch(
-            workspaceApi.util.upsertQueryData("getWorkspace", undefined, data),
-          );
-        },
+        invalidatesTags: (_result, error) => (error ? [] : [...DATA_TAGS]),
       });
 
     return {

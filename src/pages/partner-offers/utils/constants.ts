@@ -8,5 +8,3 @@ export const PARTNER_OFFER_TABS: TabItem<PartnerOfferFilter>[] = [
   { id: "transferred", label: "Передано в CRM" },
   { id: "closed", label: "Закрыты / недоступны" },
 ];
-
-export const CLOSED_OFFER_STATES = ["closed", "unavailable"];

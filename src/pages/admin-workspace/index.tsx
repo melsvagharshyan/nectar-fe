@@ -9,7 +9,8 @@ import { useAdminWorkspace } from "./utils/hooks";
 import { PAGE } from "../../utils/styles";
 
 export function AdminWorkspace() {
-  const { state, view, control, requests, offers } = useAdminWorkspace();
+  const { state, view, control, requests, offers, paging, loading } =
+    useAdminWorkspace();
   return (
     <div className={PAGE}>
       <PageHead
@@ -23,9 +24,19 @@ export function AdminWorkspace() {
       />
       <AdminToolbar control={control} companies={state.companies} />
       {view === "offers" ? (
-        <AdminOffersTable state={state} offers={offers} />
+        <AdminOffersTable
+          state={state}
+          offers={offers}
+          paging={paging}
+          loading={loading}
+        />
       ) : (
-        <AdminRequestsTable state={state} requests={requests} />
+        <AdminRequestsTable
+          state={state}
+          requests={requests}
+          paging={paging}
+          loading={loading}
+        />
       )}
     </div>
   );

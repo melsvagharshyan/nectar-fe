@@ -1,3 +1,5 @@
+import { requestsApi } from "../api/requests-api-ts/requestsApi";
+import { store } from "../api/store";
 import { navigate, panel } from "../app/router";
 import type { DemoState, Role } from "../demo/types";
 
@@ -17,8 +19,22 @@ export function openPropertyEditor(role: Role, propertyId?: string) {
     panel("editor", { object: propertyId, mode: propertyId ? "edit" : "new" });
 }
 
-export function openRequestWorkspace(
-  state: DemoState,
+type RequestRecords = Pick<DemoState, "requests" | "clients">;
+
+const clientOfRequest = (records: RequestRecords, requestId: string) => {
+  const request = records.requests.find((r) => r.id === requestId);
+  return request && records.clients.find((c) => c.id === request.clientId);
+};
+
+async function loadRequestRecords(requestId: string) {
+  const query = store.dispatch(requestsApi.endpoints.getRequest.initiate(requestId));
+  const { data } = await query;
+  query.unsubscribe();
+  return data;
+}
+
+export async function openRequestWorkspace(
+  state: RequestRecords,
   role: Role,
   requestId: string,
 ) {
@@ -26,8 +42,12 @@ export function openRequestWorkspace(
     navigate(ROLE_WORKSPACE.partner, { request: requestId });
     return;
   }
-  const request = state.requests.find((r) => r.id === requestId)!;
-  const client = state.clients.find((c) => c.id === request.clientId)!;
+  let client = clientOfRequest(state, requestId);
+  if (!client) {
+    const loaded = await loadRequestRecords(requestId);
+    client = loaded && clientOfRequest(loaded, requestId);
+  }
+  if (!client) return;
   navigate(ROLE_WORKSPACE[role], {
     request: requestId,
     client: client.id,

@@ -8,7 +8,7 @@ const NAV_ICON =
   "relative rounded-[10px] text-nav-text hover:not-disabled:bg-nav-raised hover:not-disabled:text-white max-xs:min-w-30 max-xs:p-5";
 
 export function HeaderTools({ role }: { role: Role }) {
-  const unread = useUnreadCount(role);
+  const unread = useUnreadCount();
   return (
     <div className="ml-auto flex items-center gap-8 max-2xl:gap-5 max-lg:gap-6 max-xs:gap-2">
       <ThemeToggle className={NAV_ICON} />

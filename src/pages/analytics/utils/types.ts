@@ -1,6 +1,4 @@
-import type { metrics } from "../../../demo/selectors";
-
-export type Metrics = ReturnType<typeof metrics>;
+export type { Metrics } from "../../../api/analytics-api-ts/types";
 
 export type MetricView = "" | "active" | "offers" | "interested" | "crm" | "sold";
 

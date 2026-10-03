@@ -9,6 +9,15 @@ export const cn = (...classes: ClassNameValue[]) => twMerge(...classes);
 export const money = (n: number) =>
   "$" + Math.round(Number.isFinite(n) ? n : 0).toLocaleString("ru-RU");
 
+/** Russian plural form for `count`: forms are [1 объект, 2 объекта, 5 объектов]. */
+export function plural(count: number, forms: readonly [string, string, string]) {
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  if (mod10 === 1 && mod100 !== 11) return forms[0];
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return forms[1];
+  return forms[2];
+}
+
 export const asset = (path: string) =>
   import.meta.env.BASE_URL + path.replace(/^\//, "");
 
@@ -38,9 +47,6 @@ export const toggleValue = (values: string[], value: string) =>
 
 export const uniqueValues = <T>(values: T[]) => [...new Set(values)];
 
-export const matchesSearch = (haystack: string, query: string) =>
-  haystack.toLowerCase().includes(query.toLowerCase());
-
 /** Company of the signed-in broker/partner ("" for admins). */
 export const currentCompanyId = () => sessionCompanyId() ?? "";
 
@@ -59,14 +65,6 @@ export const actorForRole = (role: Role): Actor => ({
   role,
   companyId: companyIdForRole(role),
 });
-
-export const companyRequestCount = (state: DemoState, companyId: string) =>
-  state.requests.filter((r) =>
-    state.clients.some((c) => c.id === r.clientId && c.companyId === companyId),
-  ).length;
-
-export const companyOfferCount = (state: DemoState, companyId: string) =>
-  state.offers.filter((o) => o.companyId === companyId).length;
 
 export const readTheme = (): Theme =>
   document.documentElement.classList.contains("dark") ? "dark" : "light";

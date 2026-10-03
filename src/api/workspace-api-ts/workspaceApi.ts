@@ -1,11 +1,11 @@
-import { api } from "../api";
-import { settled } from "../settled";
+import { api, DATA_TAGS } from "../api";
+import { notificationsApi } from "../notifications-api-ts/notificationsApi";
 import type {
   DraftToggleRequest,
   InterestRequest,
+  MutationResult,
   SellRequest,
   SendOffersRequest,
-  WorkspaceState,
 } from "./types";
 
 type Action<Arg> = (arg: Arg) => { url: string; method: "POST"; body?: object };
@@ -16,27 +16,13 @@ const post =
 
 export const workspaceApi = api.injectEndpoints({
   endpoints: (build) => {
-    /**
-     * Each action responds with the refreshed snapshot, so the cached
-     * workspace is replaced directly instead of being refetched.
-     */
     const action = <Arg>(query: Action<Arg>) =>
-      build.mutation<WorkspaceState, Arg>({
+      build.mutation<MutationResult, Arg>({
         query,
-        async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
-          const data = await settled(queryFulfilled);
-          if (!data) return;
-          dispatch(
-            workspaceApi.util.upsertQueryData("getWorkspace", undefined, data),
-          );
-        },
+        invalidatesTags: (_result, error) => (error ? [] : [...DATA_TAGS]),
       });
 
     return {
-      getWorkspace: build.query<WorkspaceState, void>({
-        query: () => "/workspace",
-        providesTags: ["Workspace"],
-      }),
       startRequest: action(post<string>((id) => `/requests/${id}/start`)),
       transferRequest: action(
         post<string>((id) => `/requests/${id}/transfer`),
@@ -68,13 +54,30 @@ export const workspaceApi = api.injectEndpoints({
           ({ propertyId }) => ({ propertyId }),
         ),
       ),
-      readEvent: action(post<string>((id) => `/events/${id}/read`)),
+      readEvent: build.mutation<MutationResult, string>({
+        query: (id) => ({ url: `/events/${id}/read`, method: "POST" }),
+        invalidatesTags: (_result, error) => (error ? [] : ["Bootstrap"]),
+        onQueryStarted(id, { dispatch, getState, queryFulfilled }) {
+          const patches = notificationsApi.util
+            .selectCachedArgsForQuery(getState(), "getNotifications")
+            .map((args) =>
+              dispatch(
+                notificationsApi.util.updateQueryData("getNotifications", args, (draft) => {
+                  for (const page of draft.pages) {
+                    const item = page.items.find((e) => e.id === id);
+                    if (item) item.read = true;
+                  }
+                }),
+              ),
+            );
+          queryFulfilled.catch(() => patches.forEach((p) => p.undo()));
+        },
+      }),
     };
   },
 });
 
 export const {
-  useGetWorkspaceQuery,
   useStartRequestMutation,
   useTransferRequestMutation,
   useToggleDraftMutation,

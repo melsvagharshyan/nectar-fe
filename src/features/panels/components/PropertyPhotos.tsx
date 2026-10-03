@@ -33,6 +33,7 @@ export function PropertyPhotos({
           className={DETAIL_PHOTO}
           src={coverImage(property.media, photo)}
           alt={property.title}
+          decoding="async"
         />
       </Button>
       <div className={THUMBS}>
@@ -44,7 +45,13 @@ export function PropertyPhotos({
             aria-label={`Фото ${i + 1}`}
             onClick={() => onPhotoChange(i)}
           >
-            <img className={THUMB} src={mediaUrl(src)} alt={`Кадр ${i + 1}`} />
+            <img
+              className={THUMB}
+              src={mediaUrl(src)}
+              alt={`Кадр ${i + 1}`}
+              loading="lazy"
+              decoding="async"
+            />
           </Button>
         ))}
       </div>

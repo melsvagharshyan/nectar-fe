@@ -1,17 +1,18 @@
-import { useDemo } from "../../../app/DemoProvider";
-import { metrics, popularDistricts } from "../../../demo/selectors";
+import { useGetAnalyticsQuery } from "../../../api/analytics-api-ts/analyticsApi";
 import type { Role } from "../../../demo/types";
-import { analyticsActor, metricCards, scopedRequests } from "./helpers";
+import { EMPTY_METRICS } from "./constants";
+import { metricCards } from "./helpers";
 
 export function useAnalytics(role: Role) {
-  const [state] = useDemo();
-  const actor = analyticsActor(role);
-  const m = metrics(state, actor);
+  const { data } = useGetAnalyticsQuery();
+  const metrics = data?.metrics ?? EMPTY_METRICS;
   return {
-    state,
-    metrics: m,
-    cards: metricCards(role, m),
-    districts: popularDistricts(state, actor),
-    requests: scopedRequests(state, role),
+    metrics,
+    cards: metricCards(role, metrics),
+    districts: data?.districts ?? {},
+    stages: data?.stages ?? {},
+    companies: data?.companies ?? [],
+    transfers: data?.overview.transfers ?? [],
+    attention: data?.overview.attention ?? [],
   };
 }

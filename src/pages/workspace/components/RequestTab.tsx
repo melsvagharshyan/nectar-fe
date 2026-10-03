@@ -1,3 +1,5 @@
+import type { IconType } from "react-icons";
+import { FiClock, FiEdit2, FiFileText } from "react-icons/fi";
 import { panel } from "../../../app/router";
 import { Badge, Button, Icon } from "../../../components/ui";
 import type { Request } from "../../../demo/types";
@@ -27,14 +29,15 @@ export function RequestTab({
   onSelect: () => void;
 }) {
   const params = { client: r.clientId, request: r.id };
-  const links = [
-    { label: "Параметры", open: () => panel("request", params) },
-    { label: "История", open: () => panel("history", params) },
+  const links: { label: string; icon: IconType; open: () => void }[] = [
+    { label: "Подробнее", icon: FiFileText, open: () => panel("request", params) },
+    { label: "История", icon: FiClock, open: () => panel("history", params) },
     ...(admin
       ? []
       : [
           {
             label: "Изменить",
+            icon: FiEdit2,
             open: () => panel("request-form", { ...params, mode: "edit" }),
           },
         ]),
@@ -82,14 +85,15 @@ export function RequestTab({
           </p>
         </div>
       </Button>
-      <div className="mt-12 flex flex-wrap gap-6">
-        {links.map((link, i) => (
+      <div className="mt-12 grid auto-cols-fr grid-flow-col gap-6">
+        {links.map(({ label, icon: LinkIcon, open }, i) => (
           <Button
-            key={link.label}
+            key={label}
             className={cn(REQUEST_LINK, i === links.length - 1 && REQUEST_LINK_LAST)}
-            onClick={link.open}
+            onClick={open}
           >
-            {link.label}
+            <LinkIcon className="size-12 shrink-0" />
+            {label}
           </Button>
         ))}
       </div>

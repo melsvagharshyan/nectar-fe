@@ -24,6 +24,9 @@ export const TOOLBAR =
 export const TABLE_WRAP =
   "overflow-hidden rounded-[16px] border border-line bg-surface shadow-card [&_td_small]:text-[12px] [&_td_strong]:font-semibold";
 
+export const TABLE_PAGINATION =
+  "!m-0 border-t border-line !px-16 !py-12 [&_.ant-pagination-total-text]:mr-auto [&_.ant-pagination-total-text]:text-[12px] [&_.ant-pagination-total-text]:text-muted [&_.ant-pagination-item-active]:!border-accent [&_.ant-pagination-item-active_a]:!text-accent";
+
 export const FIELD =
   "field flex flex-col gap-7 text-[12px] font-medium text-ink-soft [&_.ant-select]:w-full [&_small[role=alert]]:text-danger";
 

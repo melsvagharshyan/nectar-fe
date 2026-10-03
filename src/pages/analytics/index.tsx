@@ -15,25 +15,26 @@ export function Analytics({
   role: Role;
   overview?: boolean;
 }) {
-  const { state, metrics, cards, districts, requests } = useAnalytics(role);
+  const a = useAnalytics(role);
   return (
     <div className={PAGE}>
       <PageHead
         title={overview ? "Обзор платформы" : "Аналитика"}
         subtitle="Данные платформы за всё время"
       />
-      <MetricCards role={role} cards={cards} />
+      <MetricCards role={role} cards={a.cards} />
       {overview ? (
         <OverviewSection
-          state={state}
           role={role}
-          attentionCount={metrics.attention}
+          transfers={a.transfers}
+          attention={a.attention}
+          attentionCount={a.metrics.attention}
         />
       ) : (
         <div className={TWO_COL}>
-          <DistrictsChart districts={districts} />
-          <StageBreakdown requests={requests} metrics={metrics} />
-          {role === "admin" && <CompanyActivity state={state} />}
+          <DistrictsChart districts={a.districts} />
+          <StageBreakdown stages={a.stages} metrics={a.metrics} />
+          {role === "admin" && <CompanyActivity companies={a.companies} />}
         </div>
       )}
     </div>

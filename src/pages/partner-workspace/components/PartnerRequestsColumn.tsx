@@ -1,7 +1,14 @@
 import { Controller } from "react-hook-form";
 import { Select } from "../../../components/form";
 import { RequestSummary } from "../../../components/RequestSummary";
-import { Badge, Button, Count, Empty, Search } from "../../../components/ui";
+import {
+  Badge,
+  Button,
+  Count,
+  Empty,
+  InfiniteList,
+  Search,
+} from "../../../components/ui";
 import { cn } from "../../../utils/helpers";
 import { COLUMN, COLUMN_VISIBLE, SCROLL, SELECT_TAB } from "../../../utils/styles";
 import { PARTNER_REQUEST_FILTER_OPTIONS } from "../utils/constants";
@@ -27,7 +34,7 @@ export function PartnerRequestsColumn({
       <div className={HEAD}>
         <h2 className={EYEBROW}>
           Запросы
-          <Count>{m.requests.length}</Count>
+          <Count>{m.requestsPaging.total}</Count>
         </h2>
       </div>
       <div className={TOOLS}>
@@ -51,7 +58,12 @@ export function PartnerRequestsColumn({
           )}
         />
       </div>
-      <div className={cn(SCROLL, "p-14")}>
+      <InfiniteList
+        className={cn(SCROLL, "p-14")}
+        hasMore={m.requestsPaging.hasMore}
+        loading={m.requestsPaging.loadingMore}
+        onLoadMore={m.requestsPaging.loadMore}
+      >
         {m.requests.map((q) => (
           <div
             className={cn(REQUEST_TAB, m.request?.id === q.id && REQUEST_TAB_ACTIVE)}
@@ -71,12 +83,12 @@ export function PartnerRequestsColumn({
             </Button>
           </div>
         ))}
-        {!m.requests.length && (
+        {!m.requests.length && !m.requestsPaging.loading && (
           <Empty text="Запросы не найдены">
             <Button onClick={m.resetFilters}>Сбросить фильтры</Button>
           </Empty>
         )}
-      </div>
+      </InfiniteList>
     </section>
   );
 }

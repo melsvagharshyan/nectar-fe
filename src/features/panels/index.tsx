@@ -1,7 +1,9 @@
+import { Suspense } from "react";
+import { RecordScope } from "../../app/components/RecordScope";
 import { closePanel, useRoute } from "../../app/router";
+import { ObjectEditor } from "../../app/utils/pages";
 import { Empty, Overlay } from "../../components/ui";
 import { DemoForm, type DemoFormKind } from "../demo-form";
-import { ObjectEditor } from "../object-editor";
 import { ClientPanel } from "./components/ClientPanel";
 import { CompanyPanel } from "./components/CompanyPanel";
 import { DeniedNotice } from "./components/DeniedNotice";
@@ -19,7 +21,32 @@ export function Panels({ role, toast }: PanelProps) {
   const { params } = useRoute();
   const name = params.get("panel");
   if (!name) return null;
+  const loading = (
+    <Overlay title="Загрузка…" onClose={closePanel}>
+      <Empty text="Загрузка…" />
+    </Overlay>
+  );
+  return (
+    <RecordScope
+      role={role}
+      requestId={params.get("request") || undefined}
+      clientId={params.get("client") || undefined}
+      propertyId={params.get("object") || undefined}
+      fallback={loading}
+    >
+      <Suspense fallback={loading}>
+        <Panel name={name} params={params} role={role} toast={toast} />
+      </Suspense>
+    </RecordScope>
+  );
+}
 
+function Panel({
+  name,
+  params,
+  role,
+  toast,
+}: PanelProps & { name: string; params: URLSearchParams }) {
   if (name.endsWith(FORM_PANEL_SUFFIX)) {
     const kind = name.replace(FORM_PANEL_SUFFIX, "") as DemoFormKind;
     return (

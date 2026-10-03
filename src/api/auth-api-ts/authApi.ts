@@ -47,7 +47,7 @@ export const authApi = api.injectEndpoints({
     updateProfile: build.mutation<UserDto, UpdateProfileRequest>({
       query: (body) => ({ url: `${base}/me`, method: "PATCH", body }),
       // The account owner also appears in the company directory of the workspace.
-      invalidatesTags: ["Workspace"],
+      invalidatesTags: ["Bootstrap", { type: "Company", id: "LIST" }],
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         const data = await settled(queryFulfilled);
         if (data) dispatch(userRefreshed(data));

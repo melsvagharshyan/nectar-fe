@@ -1,15 +1,22 @@
 import { Controller } from "react-hook-form";
 import { panel } from "../../app/router";
 import { PageHead } from "../../components/PageHead";
-import { Badge, Button, Empty, Search, Tabs } from "../../components/ui";
+import {
+  Badge,
+  Button,
+  Empty,
+  InfiniteList,
+  Search,
+  Tabs,
+} from "../../components/ui";
 import { CompanyCard } from "./components/CompanyCard";
 import { companyStats } from "./utils/helpers";
 import { useCompanies } from "./utils/hooks";
 import { PAGE, TOOLBAR, TWO_COL } from "../../utils/styles";
 
 export function Companies() {
-  const { state, kind, setKind, tabs, searchControl, companies } =
-    useCompanies();
+  const model = useCompanies();
+  const { kind, setKind, tabs, searchControl, companies } = model;
   return (
     <div className={PAGE}>
       <PageHead
@@ -31,12 +38,17 @@ export function Companies() {
         />
         <Badge value="Активные" />
       </div>
-      <div className={TWO_COL}>
+      <InfiniteList
+        className={TWO_COL}
+        hasMore={model.hasMore}
+        loading={model.loadingMore}
+        onLoadMore={model.loadMore}
+      >
         {companies.map((c) => (
-          <CompanyCard key={c.id} company={c} stats={companyStats(state, c)} />
+          <CompanyCard key={c.id} company={c} stats={companyStats(c)} />
         ))}
-      </div>
-      {!companies.length && <Empty text="Компании не найдены" />}
+      </InfiniteList>
+      {!companies.length && !model.loading && <Empty text="Компании не найдены" />}
     </div>
   );
 }

@@ -6,7 +6,7 @@ import { usePartnerOffers } from "./utils/hooks";
 import { PAGE } from "../../utils/styles";
 
 export function PartnerOffers() {
-  const { filter, setFilter, offers, propertyOf, resultOf } =
+  const { filter, setFilter, offers, propertyOf, resultOf, paging, loading } =
     usePartnerOffers();
   return (
     <div className={PAGE}>
@@ -15,7 +15,13 @@ export function PartnerOffers() {
         subtitle="Предложения вашей компании и результаты подбора"
       />
       <Tabs items={PARTNER_OFFER_TABS} value={filter} onChange={setFilter} />
-      <PartnerOffersTable offers={offers} propertyOf={propertyOf} resultOf={resultOf} />
+      <PartnerOffersTable
+        offers={offers}
+        propertyOf={propertyOf}
+        resultOf={resultOf}
+        paging={paging}
+        loading={loading}
+      />
     </div>
   );
 }

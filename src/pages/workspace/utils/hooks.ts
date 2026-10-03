@@ -1,5 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { useDemo } from "../../../app/DemoProvider";
+import { skipToken } from "@reduxjs/toolkit/query";
+import {
+  useGetClientQuery,
+  useGetClientsInfiniteQuery,
+} from "../../../api/clients-api-ts/clientsApi";
+import {
+  useGetRequestQuery,
+  useGetRequestsInfiniteQuery,
+} from "../../../api/requests-api-ts/requestsApi";
+import { useDemo, useScopedState } from "../../../app/DemoProvider";
+import { sliceOf } from "../../../demo/scope";
 import { navigate, useRoute } from "../../../app/router";
 import { toBrokerView } from "../../../demo/projections";
 import {
@@ -16,20 +26,17 @@ import {
   EMPTY_CLIENT_FILTERS,
   OFFER_TOASTS,
 } from "./constants";
-import {
-  filterClientRequests,
-  filterClients,
-  offerTabCounts,
-  visibleOffers,
-} from "./helpers";
+import { offerTabCounts, visibleOffers } from "./helpers";
 import type { OfferTab } from "./types";
 
+const itemsOf = <T,>(pages: { items: T[] }[] | undefined) =>
+  pages?.flatMap((p) => p.items) ?? [];
+
 export function useWorkspace(admin: boolean) {
-  const [state, dispatch] = useDemo();
+  const [base, dispatch] = useDemo();
   const route = useRoute();
   const company =
-    (admin && route.params.get("company")) || brokerCompanyIdFor(state);
-  const data = toBrokerView(state, company);
+    (admin && route.params.get("company")) || brokerCompanyIdFor(base);
   const actor: Actor = { role: admin ? "admin" : "broker", companyId: company };
 
   const clientForm = useFilterForm({
@@ -44,35 +51,55 @@ export function useWorkspace(admin: boolean) {
   const [step, setStep] = useState(0);
   const carousel = useRef<HTMLDivElement>(null);
 
-  const { stage } = clientForm.values;
-  const clients = filterClients(state, data, clientForm.values);
-  const requestedRequestId = route.params.get("request");
+  const { search, manager, stage } = clientForm.values;
+  const requestedRequestId = route.params.get("request") || undefined;
+  const requestedClientParam = route.params.get("client") || undefined;
+  const requested = useGetRequestQuery(requestedRequestId ?? skipToken);
   const requestedClientId =
-    route.params.get("client") ||
-    data.requests.find((r) => r.id === requestedRequestId)?.clientId;
-  const client =
-    clients.find((c) => c.id === requestedClientId) || clients[0];
-  const requests = client
-    ? filterClientRequests(
-        state,
-        data.requests,
-        client.id,
-        stage,
-        requestForm.values.query,
-      )
-    : [];
-  const request =
-    requests.find((r) => r.id === requestedRequestId) || requests[0];
+    requestedClientParam ||
+    requested.data?.requests.find((r) => r.id === requestedRequestId)?.clientId;
 
-  const invalidClient =
-    !!requestedClientId && !data.clients.some((c) => c.id === requestedClientId);
+  const clientsQuery = useGetClientsInfiniteQuery({
+    company: admin ? company : undefined,
+    search,
+    manager,
+    stage,
+  });
+  const clientDetail = useGetClientQuery(requestedClientId ?? skipToken);
+  const clients = itemsOf(clientsQuery.data?.pages);
+  const client =
+    clients.find((c) => c.id === requestedClientId) ??
+    clientDetail.data?.clients.find((c) => c.id === requestedClientId) ??
+    clients[0];
+
+  const requestsQuery = useGetRequestsInfiniteQuery(
+    client
+      ? { clientId: client.id, stage, search: requestForm.values.query }
+      : skipToken,
+  );
+  const requests = itemsOf(requestsQuery.data?.pages);
+  const request =
+    requests.find((r) => r.id === requestedRequestId) ?? requests[0];
+  const detail = useGetRequestQuery(request?.id ?? skipToken);
+
+  const state = useScopedState([
+    ...sliceOf(clientsQuery.data?.pages),
+    clientDetail.data,
+    ...sliceOf(requestsQuery.data?.pages),
+    requested.data,
+    detail.data,
+  ]);
+  const data = toBrokerView(state, company);
+
+  const invalidClient = !!requestedClientParam && clientDetail.isError;
   const invalidRequest =
     !!requestedRequestId &&
-    !data.requests.some(
-      (r) =>
-        r.id === requestedRequestId &&
-        (!requestedClientId || r.clientId === requestedClientId),
-    );
+    (requested.isError ||
+      (!!requested.data &&
+        !!requestedClientParam &&
+        !requested.data.requests.some(
+          (r) => r.id === requestedRequestId && r.clientId === requestedClientParam,
+        )));
 
   const resetOfferFilters = () => {
     setOfferTab("all");
@@ -116,6 +143,20 @@ export function useWorkspace(admin: boolean) {
     client,
     requests,
     request,
+    clientsPaging: {
+      total: clientsQuery.data?.pages[0]?.total ?? clients.length,
+      loading: clientsQuery.isFetching && !clientsQuery.isFetchingNextPage,
+      loadingMore: clientsQuery.isFetchingNextPage,
+      hasMore: clientsQuery.hasNextPage,
+      loadMore: () => void clientsQuery.fetchNextPage(),
+    },
+    requestsPaging: {
+      total: requestsQuery.data?.pages[0]?.total ?? requests.length,
+      loading: requestsQuery.isFetching && !requestsQuery.isFetchingNextPage,
+      loadingMore: requestsQuery.isFetchingNextPage,
+      hasMore: requestsQuery.hasNextPage,
+      loadMore: () => void requestsQuery.fetchNextPage(),
+    },
     offers,
     selected,
     tabCounts: offerTabCounts(offers, selected),

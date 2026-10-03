@@ -10,8 +10,6 @@ export const NOTIFICATION_FILTERS: TabItem<NotificationFilter>[] = [
   { id: "crm", label: "CRM / результат" },
 ];
 
-export const CRM_EVENT_TYPES = ["transferred", "returned", "sold"];
-
 export const DIRECTORY_TABS: TabItem<DirectoryTab>[] = [
   { id: "clients", label: "Клиенты" },
   { id: "requests", label: "Запросы" },

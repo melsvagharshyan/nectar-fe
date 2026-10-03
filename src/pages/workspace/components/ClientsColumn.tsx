@@ -1,6 +1,6 @@
 import { Controller } from "react-hook-form";
 import { panel } from "../../../app/router";
-import { Button, Empty, Icon, Search } from "../../../components/ui";
+import { Button, Empty, Icon, InfiniteList, Search } from "../../../components/ui";
 import { COUNT } from "../../../components/ui/Count";
 import { requiresAttention } from "../../../demo/selectors";
 import { cn } from "../../../utils/helpers";
@@ -38,7 +38,7 @@ export function ClientsColumn({
             aria-label="Открыть список клиентов и запросов"
             onClick={() => panel("directory", { company: m.company })}
           >
-            {m.clients.length} ↗
+            {m.clientsPaging.total} ↗
           </Button>
         </h2>
         {!admin && (
@@ -82,7 +82,12 @@ export function ClientsColumn({
           />
         )}
       </div>
-      <div className={CLIENT_TABS}>
+      <InfiniteList
+        className={CLIENT_TABS}
+        hasMore={m.clientsPaging.hasMore}
+        loading={m.clientsPaging.loadingMore}
+        onLoadMore={m.clientsPaging.loadMore}
+      >
         {m.clients.map((c, index) => {
           const clientRequests = m.data.requests.filter(
             (r) => r.clientId === c.id,
@@ -112,12 +117,12 @@ export function ClientsColumn({
             />
           );
         })}
-        {!m.clients.length && (
+        {!m.clients.length && !m.clientsPaging.loading && (
           <Empty text="Клиенты не найдены">
             <Button onClick={m.resetClientFilters}>Сбросить фильтры</Button>
           </Empty>
         )}
-      </div>
+      </InfiniteList>
     </section>
   );
 }

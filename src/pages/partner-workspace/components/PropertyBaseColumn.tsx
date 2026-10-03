@@ -1,6 +1,6 @@
 import { panel } from "../../../app/router";
 import { PropertyCard } from "../../../components/property-card";
-import { Button, Empty } from "../../../components/ui";
+import { Button, Empty, InfiniteList } from "../../../components/ui";
 import { cn } from "../../../utils/helpers";
 import { COLUMN, COLUMN_VISIBLE, SCROLL, STACK } from "../../../utils/styles";
 import type { PartnerWorkspaceModel } from "../utils/hooks";
@@ -28,7 +28,12 @@ export function PropertyBaseColumn({
       )}
     >
       <PropertyBaseHeader model={m} />
-      <div className={cn(SCROLL, grid ? CATALOG_GRID : cn(STACK, "p-16"))}>
+      <InfiniteList
+        className={cn(SCROLL, grid ? CATALOG_GRID : cn(STACK, "p-16"))}
+        hasMore={m.propertiesPaging.hasMore}
+        loading={m.propertiesPaging.loadingMore}
+        onLoadMore={m.propertiesPaging.loadMore}
+      >
         {m.properties.map((p) => {
           const offered = m.isOffered(p.id);
           const open = () => panel("property", { object: p.id });
@@ -58,14 +63,14 @@ export function PropertyBaseColumn({
             />
           );
         })}
-        {!m.properties.length && (
+        {!m.properties.length && !m.propertiesPaging.loading && (
           <Empty text="В вашей базе нет подходящих объектов">
             <Button onClick={() => m.setMatching(false)}>
               Показать все доступные
             </Button>
           </Empty>
         )}
-      </div>
+      </InfiniteList>
     </section>
   );
 }

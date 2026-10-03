@@ -22,7 +22,7 @@ export const COUNT_BUTTON =
   "cursor-pointer border-0 hover:not-disabled:bg-fill-hover hover:not-disabled:text-ink";
 
 
-export const NEW_ITEM_BUTTON = "h-34 rounded-[10px] px-12 py-6 text-[12px]";
+export const NEW_ITEM_BUTTON = "h-34 whitespace-nowrap rounded-[10px] px-12 py-6 text-[12px]";
 
 export const CLIENT_FILTER =
   "absolute top-4 right-20 size-30 min-h-0 min-w-0 gap-0 p-6 text-[0px]";
@@ -50,7 +50,7 @@ export const MINI_REQUEST_ACTIVE =
   "border-accent text-ink hover:not-disabled:border-accent";
 
 export const REQUEST_LINK =
-  "rounded-[8px] px-10 py-5 text-[11px] font-medium";
+  "min-w-0 justify-center gap-5 whitespace-nowrap rounded-[8px] px-6 py-6 text-[11px] font-medium";
 
 export const REQUEST_LINK_LAST =
   "bg-accent-tint text-accent-text hover:not-disabled:bg-accent-tint hover:not-disabled:text-accent-hover";

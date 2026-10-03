@@ -1,4 +1,4 @@
-import { scopedRequests, visibleEvents } from "./selectors";
+import { scopedRequests } from "./selectors";
 import type { DemoState, Offer, Property } from "./types";
 export type PublicProperty = Omit<
   Property,
@@ -32,8 +32,6 @@ export function toBrokerView(state: DemoState, companyId?: string) {
     companies: state.companies.filter((c) => c.id === companyId),
     employees: state.employees.filter((e) => e.companyId === companyId),
     transfers: state.transfers.filter((t) => requestIds.has(t.requestId)),
-    events: visibleEvents(state, actor),
-    readEventIds: state.readEventIds,
   };
 }
 export function toPartnerView(state: DemoState, companyId?: string) {
@@ -71,8 +69,5 @@ export function toPartnerView(state: DemoState, companyId?: string) {
         .filter(([id]) => requestIds.has(id))
         .map(([id, ids]) => [id, ids.filter((p) => ownIds.has(p))]),
     ),
-    events: visibleEvents(state, actor),
-    readEventIds: state.readEventIds,
   };
 }
-export const toAdminView = (state: DemoState) => structuredClone(state);

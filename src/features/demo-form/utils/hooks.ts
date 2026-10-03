@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useGetDistrictStatsQuery } from "../../../api/analytics-api-ts/analyticsApi";
 import { getApiErrorMessage } from "../../../api/errors";
 import {
   useCreateClientMutation,
@@ -20,7 +21,6 @@ import { useDirtyClose } from "../../../utils/hooks";
 import { SAVED_MESSAGES } from "./constants";
 import {
   buildDemoFormDefaults,
-  buildDistrictStats,
   resolveDemoFormRecords,
   toClientPayload,
   toCompanyPayload,
@@ -74,10 +74,7 @@ function useSaveRecord({ kind, id }: DemoFormProps, records: DemoFormRecords) {
   };
 }
 
-export function useDistrictStats() {
-  const [state] = useDemo();
-  return useMemo(() => buildDistrictStats(state.properties), [state.properties]);
-}
+export const useDistrictStats = () => useGetDistrictStatsQuery().data ?? {};
 
 export function useDemoForm(props: DemoFormProps) {
   const { kind, id, onClose, onSuccess } = props;

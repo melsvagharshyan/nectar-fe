@@ -20,6 +20,8 @@ export function Avatar({
         <img
           src={mediaUrl(src)}
           alt=""
+          loading="lazy"
+          decoding="async"
           className="absolute z-1 size-full object-cover"
           onError={(e) => {
             e.currentTarget.style.display = "none";

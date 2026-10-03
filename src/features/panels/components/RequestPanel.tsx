@@ -20,7 +20,7 @@ export function RequestPanel({
       {!request ? (
         <DeniedNotice />
       ) : historyOnly ? (
-        <Timeline role={role} requestId={request.id} />
+        <Timeline requestId={request.id} />
       ) : (
         <RequestDetails role={role} request={request} toast={toast} />
       )}

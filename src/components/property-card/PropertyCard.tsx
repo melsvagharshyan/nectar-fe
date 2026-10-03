@@ -58,6 +58,7 @@ export function PropertyCard({
             src={coverImage(p.media)}
             alt={p.title}
             loading="lazy"
+            decoding="async"
             onError={(e) => {
               e.currentTarget.onerror = null;
               e.currentTarget.src = asset(FALLBACK_IMAGE);

@@ -1,45 +1,6 @@
-import { requiresAttention } from "../../../demo/selectors";
-import type { DemoState, Offer, Request } from "../../../demo/types";
-import { matchesSearch, money } from "../../../utils/helpers";
-import type {
-  BrokerData,
-  ClientFilters,
-  OfferFilters,
-  OfferTab,
-} from "./types";
-
-export const stageMatches = (state: DemoState, r: Request, stage: string) =>
-  !stage ||
-  (stage === "attention" ? requiresAttention(state, r) : r.stage === stage);
-
-export const filterClients = (
-  state: DemoState,
-  data: BrokerData,
-  { search, manager, stage }: ClientFilters,
-) =>
-  data.clients.filter(
-    (c) =>
-      (!manager || c.employeeId === manager) &&
-      (!stage ||
-        data.requests.some(
-          (r) => r.clientId === c.id && stageMatches(state, r, stage),
-        )) &&
-      matchesSearch(`${c.name} ${c.id} ${c.phone}`, search),
-  );
-
-export const filterClientRequests = (
-  state: DemoState,
-  requests: Request[],
-  clientId: string,
-  stage: string,
-  query: string,
-) =>
-  requests.filter(
-    (r) =>
-      r.clientId === clientId &&
-      stageMatches(state, r, stage) &&
-      matchesSearch(`${r.id} ${r.type} ${r.districts.join(" ")}`, query),
-  );
+import type { Offer, Request } from "../../../demo/types";
+import { money } from "../../../utils/helpers";
+import type { BrokerData, OfferFilters, OfferTab } from "./types";
 
 const matchesTab = (offer: Offer, tab: OfferTab, selected: Offer[]) =>
   tab === "selected"

@@ -8,8 +8,6 @@ export const ADMIN_VIEW_TABS: TabItem<string>[] = [
   { id: "sold", label: "Завершённые" },
 ];
 
-export const INTERESTED_OFFER_STATES = ["interested", "transferred"];
-
 export const DEFAULT_ADMIN_FILTERS: AdminFilters = {
   search: "",
   company: "",

@@ -40,7 +40,7 @@ export function CompanyPanel({ role }: Pick<PanelProps, "role">) {
           </div>
           <div className={cn(BOX, "mt-20")}>
             <h3>{isRussian ? "Клиенты и запросы" : "Объекты и предложения"}</h3>
-            <CompanyRecords state={state} company={company} />
+            <CompanyRecords company={company} />
           </div>
           <OverlayFooter>
             <Button

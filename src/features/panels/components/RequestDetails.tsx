@@ -65,7 +65,7 @@ export function RequestDetails({
       <h3 className="mt-20">Полученные предложения</h3>
       <OfferStatusList items={offerItems} />
       <div className="mt-20">
-        <Timeline role={role} requestId={request.id} />
+        <Timeline requestId={request.id} />
       </div>
       <OverlayFooter>
         <Button onClick={() => goToRequest(request.id)}>

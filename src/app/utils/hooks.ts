@@ -2,14 +2,12 @@ import { useCallback, useState } from "react";
 import { api } from "../../api/api";
 import { authApi } from "../../api/auth-api-ts/authApi";
 import { signedOut } from "../../api/auth-api-ts/authSlice";
+import { useGetBootstrapQuery } from "../../api/bootstrap-api-ts/bootstrapApi";
 import { getApiErrorMessage } from "../../api/errors";
 import { useAppDispatch, useAppSelector } from "../../api/store";
 import { workspaceApi } from "../../api/workspace-api-ts/workspaceApi";
 import { notify } from "../../components/toaster";
-import { visibleEvents } from "../../demo/selectors";
-import type { DemoAction, Role } from "../../demo/types";
-import { actorForRole } from "../../utils/helpers";
-import { useDemo } from "../DemoProvider";
+import type { DemoAction } from "../../demo/types";
 import { ACTION_ERROR_TITLES, AUTH_ROUTES } from "./constants";
 import { redirect } from "../router";
 
@@ -17,12 +15,7 @@ export interface ActionResult {
   error?: string;
 }
 
-export function useUnreadCount(role: Role) {
-  const [state] = useDemo();
-  return visibleEvents(state, actorForRole(role)).filter(
-    (e) => !state.readEventIds.includes(role + ":" + e.id),
-  ).length;
-}
+export const useUnreadCount = () => useGetBootstrapQuery().data?.unreadCount ?? 0;
 
 export const useCurrentUser = () => useAppSelector((s) => s.auth.user);
 

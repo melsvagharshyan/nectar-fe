@@ -1,7 +1,6 @@
-import type { DemoState } from "../../demo/types";
-
-/** Role-scoped snapshot returned by `GET /workspace` and by every workflow action. */
-export type WorkspaceState = Omit<DemoState, "error">;
+export interface MutationResult {
+  ok: true;
+}
 
 export interface InterestRequest {
   offerId: string;
