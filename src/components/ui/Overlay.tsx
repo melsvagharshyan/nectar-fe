@@ -11,12 +11,14 @@ export function Overlay({
   onClose,
   wide = false,
   modal = false,
+  actions,
 }: {
   title: string;
   children: ReactNode;
   onClose: () => void;
   wide?: boolean;
   modal?: boolean;
+  actions?: ReactNode;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [footer, setFooter] = useState<HTMLDivElement | null>(null);
@@ -47,9 +49,12 @@ export function Overlay({
       >
         <div className="drawer-head flex shrink-0 items-center justify-between gap-15 border-b border-line px-24 py-18 max-xs:px-18 max-xs:py-14">
           <h2>{title}</h2>
-          <Button iconOnly aria-label="Закрыть панель" onClick={onClose}>
-            <Icon name="close" />
-          </Button>
+          <div className="flex items-center gap-8">
+            {actions}
+            <Button iconOnly aria-label="Закрыть панель" onClick={onClose}>
+              <Icon name="close" />
+            </Button>
+          </div>
         </div>
         <OverlayFooterContext value={footer}>
           <div className="drawer-body min-h-0 flex-1 overflow-auto p-24 max-xs:p-18">

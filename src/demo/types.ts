@@ -141,6 +141,7 @@ export interface DemoState {
 }
 export type DemoAction =
   | { type: "READ_EVENT"; actor: Actor; eventId: string }
+  | { type: "READ_ALL_EVENTS"; actor: Actor }
   | { type: "INTEREST"; actor: Actor; offerId: string; selected?: boolean }
   | { type: "REJECT" | "RESTORE"; actor: Actor; offerId: string }
   | {

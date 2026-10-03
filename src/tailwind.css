@@ -245,4 +245,27 @@
     text-transform: uppercase;
     white-space: nowrap;
   }
+
+  /* Chromium ignores ::-webkit-scrollbar once scrollbar-width is set, so the standard props are Firefox-only. */
+  .ant-select-dropdown ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .ant-select-dropdown ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .ant-select-dropdown ::-webkit-scrollbar-thumb {
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: var(--c-line-strong) padding-box;
+  }
+  .ant-select-dropdown ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--c-faint);
+  }
+  @supports (-moz-appearance: none) {
+    .ant-select-dropdown * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--c-line-strong) transparent;
+    }
+  }
 }

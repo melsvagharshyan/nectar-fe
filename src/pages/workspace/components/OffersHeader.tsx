@@ -1,6 +1,6 @@
 import { Button, Icon, Tabs, type TabItem } from "../../../components/ui";
 import type { Request } from "../../../demo/types";
-import { money, uniqueValues } from "../../../utils/helpers";
+import { money } from "../../../utils/helpers";
 import type { WorkspaceModel } from "../utils/hooks";
 import { OFFER_TABS, OFFERS_HEAD } from "../utils/styles";
 import type { OfferTab } from "../utils/types";
@@ -51,10 +51,7 @@ export function OffersHeader({
         classNames={OFFER_TABS}
       />
       {m.showOfferFilters && (
-        <OfferFiltersPanel
-          control={m.offerForm.control}
-          districts={uniqueValues(m.data.properties.map((p) => p.district))}
-        />
+        <OfferFiltersPanel control={m.offerForm.control} />
       )}
     </div>
   );

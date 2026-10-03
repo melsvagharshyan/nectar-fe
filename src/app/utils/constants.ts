@@ -125,6 +125,7 @@ export const SETTINGS_LABELS: Record<Role, string> = {
 
 export const ACTION_ERROR_TITLES: Record<DemoAction["type"], string> = {
   READ_EVENT: "Не удалось отметить уведомление",
+  READ_ALL_EVENTS: "Не удалось отметить уведомления",
   INTEREST: "Не удалось изменить бронь",
   REJECT: "Не удалось отклонить объект",
   RESTORE: "Не удалось вернуть объект",

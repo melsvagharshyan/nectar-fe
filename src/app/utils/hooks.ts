@@ -45,6 +45,8 @@ export function useWorkspaceDispatch() {
         switch (action.type) {
           case "READ_EVENT":
             return appDispatch(endpoints.readEvent.initiate(action.eventId));
+          case "READ_ALL_EVENTS":
+            return appDispatch(endpoints.readAllEvents.initiate());
           case "INTEREST":
             return appDispatch(
               endpoints.setInterest.initiate({

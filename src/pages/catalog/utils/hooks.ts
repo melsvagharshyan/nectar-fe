@@ -7,7 +7,7 @@ import type { PropertyListMeta } from "../../../api/properties-api-ts/types";
 import { useDemo, useScopedState } from "../../../app/DemoProvider";
 import { useRoute } from "../../../app/router";
 import type { Role } from "../../../demo/types";
-import { PAGE_SIZE } from "../../../utils/constants";
+import { DISTRICTS, PAGE_SIZE } from "../../../utils/constants";
 import { useFilterForm, usePagedArgs } from "../../../utils/hooks";
 import { EMPTY_CATALOG_FILTERS } from "./constants";
 import type { CatalogStatus, CatalogView } from "./types";
@@ -39,10 +39,9 @@ export function useCatalog(role: Role) {
   const pages = feed.data?.pages;
   const isGrid = view === "grid";
   const source = isGrid ? pages?.[0] : table.data;
-  const meta: PropertyListMeta = {
+  const meta: Omit<PropertyListMeta, "districts"> = {
     total: source?.total ?? 0,
     statusCounts: source?.statusCounts ?? {},
-    districts: source?.districts ?? [],
   };
   const slice = useMemo(
     () =>
@@ -64,7 +63,7 @@ export function useCatalog(role: Role) {
     total: meta.total,
     overall,
     statusCounts: meta.statusCounts,
-    districts: meta.districts,
+    districts: DISTRICTS,
     loading: isGrid ? feed.isLoading : table.isFetching,
     paging: {
       page: paged.page,

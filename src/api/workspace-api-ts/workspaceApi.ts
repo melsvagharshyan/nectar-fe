@@ -22,6 +22,36 @@ export const workspaceApi = api.injectEndpoints({
         invalidatesTags: (_result, error) => (error ? [] : [...DATA_TAGS]),
       });
 
+    /** Flags cached notifications as read right away and rolls back on failure. */
+    const markRead = <Arg>(
+      query: Action<Arg>,
+      isTarget: (arg: Arg, eventId: string) => boolean,
+      refetchList = false,
+    ) =>
+      build.mutation<MutationResult, Arg>({
+        query,
+        invalidatesTags: (_result, error) =>
+          error
+            ? []
+            : refetchList
+              ? ["Bootstrap", { type: "Notification", id: "LIST" }]
+              : ["Bootstrap"],
+        onQueryStarted(arg, { dispatch, getState, queryFulfilled }) {
+          const patches = notificationsApi.util
+            .selectCachedArgsForQuery(getState(), "getNotifications")
+            .map((args) =>
+              dispatch(
+                notificationsApi.util.updateQueryData("getNotifications", args, (draft) => {
+                  for (const page of draft.pages)
+                    for (const item of page.items)
+                      if (isTarget(arg, item.id)) item.read = true;
+                }),
+              ),
+            );
+          queryFulfilled.catch(() => patches.forEach((p) => p.undo()));
+        },
+      });
+
     return {
       startRequest: action(post<string>((id) => `/requests/${id}/start`)),
       transferRequest: action(
@@ -54,25 +84,15 @@ export const workspaceApi = api.injectEndpoints({
           ({ propertyId }) => ({ propertyId }),
         ),
       ),
-      readEvent: build.mutation<MutationResult, string>({
-        query: (id) => ({ url: `/events/${id}/read`, method: "POST" }),
-        invalidatesTags: (_result, error) => (error ? [] : ["Bootstrap"]),
-        onQueryStarted(id, { dispatch, getState, queryFulfilled }) {
-          const patches = notificationsApi.util
-            .selectCachedArgsForQuery(getState(), "getNotifications")
-            .map((args) =>
-              dispatch(
-                notificationsApi.util.updateQueryData("getNotifications", args, (draft) => {
-                  for (const page of draft.pages) {
-                    const item = page.items.find((e) => e.id === id);
-                    if (item) item.read = true;
-                  }
-                }),
-              ),
-            );
-          queryFulfilled.catch(() => patches.forEach((p) => p.undo()));
-        },
-      }),
+      readEvent: markRead(
+        post<string>((id) => `/events/${id}/read`),
+        (id, eventId) => id === eventId,
+      ),
+      readAllEvents: markRead(
+        post<void>(() => "/events/read-all"),
+        () => true,
+        true,
+      ),
     };
   },
 });
@@ -88,4 +108,5 @@ export const {
   useReturnTransferMutation,
   useSellTransferMutation,
   useReadEventMutation,
+  useReadAllEventsMutation,
 } = workspaceApi;

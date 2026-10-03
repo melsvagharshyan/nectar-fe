@@ -5,6 +5,7 @@ import { useGetPropertiesFeedInfiniteQuery } from "../../../api/properties-api-t
 import { useGetRequestsInfiniteQuery } from "../../../api/requests-api-ts/requestsApi";
 import { useDemo } from "../../../app/DemoProvider";
 import { useRoute } from "../../../app/router";
+import { useUnreadCount } from "../../../app/utils/hooks";
 import { toBrokerView, toPartnerView } from "../../../demo/projections";
 import { canSeeRequest } from "../../../demo/selectors";
 import type { Company, Role } from "../../../demo/types";
@@ -107,7 +108,9 @@ export function useNotificationFeed(filter: NotificationFilter) {
     { skip: !attention },
   );
   const source = attention ? requests : events;
+  const unreadCount = useUnreadCount();
   return {
+    canReadAll: !attention && unreadCount > 0,
     events: attention ? [] : pageItems(events.data?.pages),
     attentionRequests: attention ? pageItems(requests.data?.pages) : [],
     loading: source.isLoading,

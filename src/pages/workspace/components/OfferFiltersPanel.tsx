@@ -1,18 +1,12 @@
 import { Controller, type Control } from "react-hook-form";
 import { Input, Select } from "../../../components/form";
-import { ROOM_FILTER_OPTIONS } from "../../../utils/constants";
+import { DISTRICTS, ROOM_FILTER_OPTIONS } from "../../../utils/constants";
 import { OFFER_SORT_OPTIONS } from "../utils/constants";
 import type { OfferFilters } from "../utils/types";
 
 const FILTER_SELECT = "w-170 max-w-full";
 
-export function OfferFiltersPanel({
-  control,
-  districts,
-}: {
-  control: Control<OfferFilters>;
-  districts: string[];
-}) {
+export function OfferFiltersPanel({ control }: { control: Control<OfferFilters> }) {
   return (
     <div className="flex flex-wrap items-end gap-9 rounded-[12px] border border-line bg-subtle p-12">
       <Controller
@@ -24,7 +18,7 @@ export function OfferFiltersPanel({
             className={FILTER_SELECT}
             aria-label="Район предложений"
             placeholder="Все районы"
-            options={districts}
+            options={DISTRICTS}
           />
         )}
       />
