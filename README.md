@@ -36,9 +36,9 @@ npm run dev
 
 Роль переключается в шапке приложения или по адресу:
 
-- `#/broker/workspace` — российский брокер;
-- `#/partner/requests` — армянский брокер;
-- `#/admin/overview` — администратор.
+- `/broker/workspace` — российский брокер;
+- `/partner/requests` — армянский брокер;
+- `/admin/overview` — администратор.
 
 ## Структура
 

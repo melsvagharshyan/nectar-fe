@@ -11,6 +11,7 @@ import {
   type DefaultValues,
   type FieldValues,
 } from "react-hook-form";
+import { go } from "../app/router";
 import { applyTheme, readTheme } from "./helpers";
 import type { Theme } from "./types";
 
@@ -80,7 +81,7 @@ export function useDirtyClose(dirty: boolean, onClose: () => void) {
     },
     leave: () => {
       allowed.current = true;
-      if (pending.current) location.hash = pending.current;
+      if (pending.current) go(pending.current);
       else onClose();
     },
   };
