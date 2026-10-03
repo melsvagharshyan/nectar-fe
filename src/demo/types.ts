@@ -44,7 +44,6 @@ export interface Client {
   name: string;
   phone: string;
   email: string;
-  avatar: string;
 }
 export interface Request {
   id: string;

@@ -23,7 +23,7 @@ export function ClientPanel({ role }: Pick<PanelProps, "role">) {
       {client ? (
         <>
           <div className={ROW}>
-            <Avatar name={client.name} src={client.avatar} />
+            <Avatar name={client.name} />
             <div>
               <h2>{client.name}</h2>
               <small>{client.id}</small>
