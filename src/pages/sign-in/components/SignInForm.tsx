@@ -6,8 +6,8 @@ import { SIGN_IN_FORM_ID } from "../utils/constants";
 import { useSignInForm } from "../utils/hooks";
 import { SignInNotice } from "./SignInNotice";
 
-export function SignInForm() {
-  const { form, submit, notice } = useSignInForm();
+export function SignInForm({ admin = false }: { admin?: boolean }) {
+  const { form, submit, notice } = useSignInForm(admin);
   const { isSubmitting } = form.formState;
 
   return (

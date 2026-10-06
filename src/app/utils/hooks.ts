@@ -21,14 +21,15 @@ export const useCurrentUser = () => useAppSelector((s) => s.auth.user);
 
 export function useSignOut() {
   const dispatch = useAppDispatch();
+  const role = useCurrentUser()?.role;
   return useCallback(async () => {
     // The httpOnly cookie can only be cleared by the server; sign out locally regardless.
     await dispatch(authApi.endpoints.signOut.initiate());
     dispatch(signedOut());
     dispatch(api.util.resetApiState());
-    redirect(AUTH_ROUTES.signIn);
+    redirect(role === "admin" ? AUTH_ROUTES.adminSignIn : AUTH_ROUTES.signIn);
     notify.info("Вы вышли из аккаунта", { description: "До скорой встречи!" });
-  }, [dispatch]);
+  }, [dispatch, role]);
 }
 
 const { endpoints } = workspaceApi;

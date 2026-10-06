@@ -9,11 +9,17 @@ export function AuthLayout({
   subtitle,
   children,
   footer,
+  hero = <AuthHero />,
+  badge,
 }: {
   title: string;
   subtitle: string;
   children: ReactNode;
   footer: ReactNode;
+  /** Left panel; the broker/partner hero by default. */
+  hero?: ReactNode;
+  /** Shown above the title in place of the logo mark. */
+  badge?: ReactNode;
 }) {
   return (
     <div
@@ -22,7 +28,7 @@ export function AuthLayout({
         AUTH_PAGE_BACKGROUND,
       )}
     >
-      <AuthHero />
+      {hero}
       <main className="relative flex min-h-0 flex-col overflow-y-auto px-24 py-24 max-xs:px-16">
         <div className="flex items-center justify-between lg:justify-end">
           <Logo className="lg:hidden" />
@@ -30,7 +36,7 @@ export function AuthLayout({
         </div>
         <div className="m-auto w-full max-w-[460px] py-24">
           <div className={AUTH_FORM_CARD}>
-            <LogoMark className="mx-auto mb-16 size-44 max-lg:hidden" />
+            {badge ?? <LogoMark className="mx-auto mb-16 size-44 max-lg:hidden" />}
             <h1 className="text-center text-[28px] tracking-[-0.8px] max-xs:text-[24px]">{title}</h1>
             <p className="mt-8 mb-24 text-center text-[14px] text-muted">{subtitle}</p>
             {children}

@@ -24,6 +24,14 @@ export const authApi = api.injectEndpoints({
       },
     }),
 
+    adminSignIn: build.mutation<AuthResponse, SignInRequest>({
+      query: (body) => ({ url: `${base}/admin/sign-in`, method: "POST", body }),
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        const data = await settled(queryFulfilled);
+        if (data) dispatch(signedIn(data.user));
+      },
+    }),
+
     // No session yet: the applicant can sign in once an admin approves.
     signUp: build.mutation<SignUpResponse, SignUpRequest>({
       query: (body) => ({ url: `${base}/sign-up`, method: "POST", body }),
@@ -68,6 +76,7 @@ export const authApi = api.injectEndpoints({
 
 export const {
   useSignInMutation,
+  useAdminSignInMutation,
   useSignUpMutation,
   useSignOutMutation,
   useGetMeQuery,

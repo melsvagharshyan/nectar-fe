@@ -5,6 +5,9 @@ export const API_URL = process.env.E2E_API_URL ?? "http://localhost:4000/api";
 
 export const ADMIN = { email: "admin.demo@example.com", password: "demo12345" };
 
+/** Admins have their own sign-in page and endpoint. */
+const isAdmin = (creds: { email: string }) => creds.email === ADMIN.email;
+
 export type SignUpRole = "broker" | "partner";
 
 export interface Applicant {
@@ -57,7 +60,7 @@ export async function apiSession(
     baseURL: `${API_URL}/`,
     extraHTTPHeaders: { "X-Forwarded-For": randomIp() },
   });
-  const res = await ctx.post("auth/sign-in", {
+  const res = await ctx.post(isAdmin(creds) ? "auth/admin/sign-in" : "auth/sign-in", {
     data: { email: creds.email, password: creds.password },
   });
   expect(res.status(), await res.text()).toBe(200);
@@ -94,7 +97,8 @@ export async function fillSignUp(page: Page, a: Applicant) {
 }
 
 export async function signIn(page: Page, creds: { email: string; password: string }) {
-  if (!page.url().includes("/sign-in")) await page.goto("/sign-in");
+  const path = isAdmin(creds) ? "/admin" : "/sign-in";
+  if (new URL(page.url(), "http://x").pathname !== path) await page.goto(path);
   await page.getByLabel("Email").fill(creds.email);
   await page.getByLabel("Пароль").fill(creds.password);
   await page.getByRole("button", { name: "Войти", exact: true }).click();
@@ -102,7 +106,7 @@ export async function signIn(page: Page, creds: { email: string; password: strin
 
 /** Signed in = left the auth screens. */
 export async function expectSignedIn(page: Page) {
-  await expect(page).not.toHaveURL(/\/sign-(in|up)/, { timeout: 10_000 });
+  await expect(page).not.toHaveURL(/\/(sign-(in|up)|admin)(\?|$)/, { timeout: 10_000 });
 }
 
 export const registrationsMenu = (page: Page) =>

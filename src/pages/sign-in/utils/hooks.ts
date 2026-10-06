@@ -1,7 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useSignInMutation } from "../../../api/auth-api-ts/authApi";
+import {
+  useAdminSignInMutation,
+  useSignInMutation,
+} from "../../../api/auth-api-ts/authApi";
 import { signOutReasonCleared } from "../../../api/auth-api-ts/authSlice";
 import {
   getApiErrorCode,
@@ -14,9 +17,12 @@ import { SIGN_IN_DEFAULTS } from "./constants";
 import type { SignInFormValues, SignInNotice } from "./types";
 import { signInSchema } from "./validations";
 
-export function useSignInForm() {
+/** `admin` signs in through the admin-only endpoint. */
+export function useSignInForm(admin = false) {
   const dispatch = useAppDispatch();
-  const [signIn] = useSignInMutation();
+  const [cabinetSignIn] = useSignInMutation();
+  const [adminSignIn] = useAdminSignInMutation();
+  const signIn = admin ? adminSignIn : cabinetSignIn;
   // Set when the server ended the session because an admin blocked the account.
   const signOutReason = useAppSelector((s) => s.auth.signOutReason);
   const [notice, setNotice] = useState<SignInNotice | null>(null);

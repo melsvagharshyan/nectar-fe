@@ -146,10 +146,12 @@ export const ACTION_ERROR_TITLES: Record<DemoAction["type"], string> = {
 export const AUTH_ROUTES = {
   signIn: "/sign-in",
   signUp: "/sign-up",
+  adminSignIn: "/admin",
 } as const;
 
 export const PUBLIC_ROUTES: string[] = [
   AUTH_ROUTES.signIn,
   AUTH_ROUTES.signUp,
+  AUTH_ROUTES.adminSignIn,
   "/ui-kit",
 ];

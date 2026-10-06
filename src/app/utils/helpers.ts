@@ -8,12 +8,16 @@ import type { Route, ShellLocation } from "./types";
 
 /** Where the current path should send this user, or `null` to stay. */
 export function authRedirect(path: string, user: UserDto | null): string | null {
-  if (!user) return PUBLIC_ROUTES.includes(path) ? null : AUTH_ROUTES.signIn;
+  if (!user) return PUBLIC_ROUTES.includes(path) ? null : signInRoute(path);
   if (path === "/ui-kit") return null;
   if (PUBLIC_ROUTES.includes(path) || path === "/") return ROLE_HOMES[user.role];
   const [, segment = ""] = path.split("/");
   return isRole(segment) && segment !== user.role ? ROLE_HOMES[user.role] : null;
 }
+
+/** Guests opening the admin cabinet get the admin sign-in. */
+export const signInRoute = (path: string) =>
+  path.startsWith(`${AUTH_ROUTES.adminSignIn}/`) ? AUTH_ROUTES.adminSignIn : AUTH_ROUTES.signIn;
 
 export const isRole = (value: string): value is Role => value in ROLE_NAMES;
 
