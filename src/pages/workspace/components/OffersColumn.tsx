@@ -20,7 +20,7 @@ export function OffersColumn({
       className={cn(
         "offers-column",
         COLUMN,
-        m.step === 2 && COLUMN_VISIBLE,
+        m.step === 1 && COLUMN_VISIBLE,
         OFFERS_COLUMN,
       )}
     >

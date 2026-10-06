@@ -149,15 +149,22 @@ test.describe("broker sign-up with admin approval", () => {
     await admin.dispose();
   });
 
-  test("duplicate pending sign-up shows an inline email error", async ({ page, api }) => {
+  // The form must not reveal that the email is taken, so a duplicate looks like
+  // a normal submission, but only the first application is filed.
+  test("duplicate pending sign-up looks accepted but isn't filed twice", async ({ page, api, playwright }) => {
     const applicant = makeApplicant("broker", "Dup");
     await signUpViaApi(api, applicant);
 
     await fillSignUp(page, applicant);
     await page.getByRole("button", { name: "Отправить заявку" }).click();
-    await expect(page.getByText("Заявка с этим email уже на рассмотрении")).toBeVisible();
-    await expect(page.getByLabel("Email")).toBeFocused();
-    await expect(page.getByRole("heading", { name: "Заявка отправлена" })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Заявка отправлена" })).toBeVisible();
+
+    const admin = await apiSession(playwright, ADMIN);
+    const pending = await (
+      await admin.get("registration-requests", { params: { status: "pending", search: applicant.email } })
+    ).json();
+    expect(pending.items).toHaveLength(1);
+    await admin.dispose();
   });
 
   test("admin menu shows the pending count and non-admins can't list applications", async ({ page, api, playwright }) => {

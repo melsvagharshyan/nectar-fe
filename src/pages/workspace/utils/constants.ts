@@ -1,7 +1,7 @@
 import type { SelectOption } from "../../../utils/types";
 import type { OfferFilters } from "./types";
 
-export const WORKSPACE_STEPS = ["Клиенты", "Запросы", "Объекты"];
+export const WORKSPACE_STEPS = ["Клиенты", "Объекты"];
 
 export const STAGE_FILTER_OPTIONS: SelectOption[] = [
   { value: "attention", label: "Требует внимания" },

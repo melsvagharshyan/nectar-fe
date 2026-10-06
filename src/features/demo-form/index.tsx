@@ -18,7 +18,7 @@ export function DemoForm(props: DemoFormProps) {
   const { form, records, reReview, dirtyClose, submit, isMapOpen, setMapOpen } =
     useDemoForm(props);
   const districts = useWatch({ control: form.control, name: "districts" });
-  const { isSubmitting } = form.formState;
+  const { isSubmitting, isDirty } = form.formState;
 
   return (
     <>
@@ -56,7 +56,7 @@ export function DemoForm(props: DemoFormProps) {
                   type="submit"
                   form={DEMO_FORM_ID}
                   variant="primary"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || (!!id && !isDirty)}
                 >
                   {isSubmitting ? "Сохранение…" : "Сохранить"}
                 </Button>

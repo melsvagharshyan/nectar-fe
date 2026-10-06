@@ -70,9 +70,14 @@ test.describe("admin blocks and unblocks a broker account", () => {
     await expect(page.getByText("Неверный email или пароль")).toBeVisible();
     await expect(notice).toHaveCount(0);
 
-    // Re-applying with the same email can't bypass the block.
+    // Re-applying with the same email can't bypass the block: it's accepted
+    // (so the form doesn't reveal the account) but nothing is filed.
     const again = await api.post("auth/sign-up", { data: broker });
-    expect(again.status()).toBe(409);
+    expect(again.status()).toBe(202);
+    const pending = await (
+      await adminApi.get("registration-requests", { params: { status: "pending", search: broker.email } })
+    ).json();
+    expect(pending.items).toHaveLength(0);
 
     // Admin unblocks.
     await admin.goto(`/admin/companies?panel=company&company=${companyId}`);

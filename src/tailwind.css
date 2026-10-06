@@ -238,6 +238,32 @@
 
 /* antd has no tokens for these; this layer sits above antd's own. */
 @layer components {
+  /* An open vertical tab that flows into the column on its right, like a Chrome tab on its side:
+     the two corners on that side curve outwards into the neighbouring column. */
+  @media (width >= 1024px) {
+    .browser-tab {
+      --tab-curve: 12px;
+      position: relative;
+    }
+    .browser-tab::before,
+    .browser-tab::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      width: var(--tab-curve);
+      height: var(--tab-curve);
+      pointer-events: none;
+    }
+    .browser-tab::before {
+      bottom: 100%;
+      background: radial-gradient(circle at 0 0, transparent calc(var(--tab-curve) - 0.5px), var(--c-page) var(--tab-curve));
+    }
+    .browser-tab::after {
+      top: 100%;
+      background: radial-gradient(circle at 0 100%, transparent calc(var(--tab-curve) - 0.5px), var(--c-page) var(--tab-curve));
+    }
+  }
+
   .ant-table-wrapper .ant-table-thead > tr > th {
     font-size: 11px;
     font-weight: 600;
