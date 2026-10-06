@@ -5,16 +5,20 @@ export const activeTransfer = (state: DemoState, requestId: string) =>
   state.transfers.find(
     (t) => t.requestId === requestId && t.state === "demo_transferred",
   );
+/** Approved, still open, and its property is published. */
 export const isOfferAvailable = (state: DemoState, offer: Offer) =>
+  offer.review === "approved" &&
   !["closed", "unavailable"].includes(offer.state) &&
   state.properties.some(
     (p) => p.id === offer.propertyId && p.availability === "active",
   );
+/** Booked offers that a reservation would include (others hold the rest). */
 export const selectedOffers = (state: DemoState, requestId: string) =>
   requestOffers(state, requestId).filter(
     (o) =>
       ["interested", "transferred"].includes(o.state) &&
-      isOfferAvailable(state, o),
+      isOfferAvailable(state, o) &&
+      !(o.state === "interested" && o.reservedElsewhere),
   );
 export const isRequestEditable = (state: DemoState, request: Request) =>
   ["in_progress", "has_offers"].includes(request.stage) &&
@@ -44,6 +48,11 @@ export const requiresAttention = (state: DemoState, request: Request) =>
   request.stage === "in_progress" &&
   !requestOffers(state, request.id).some((o) => isOfferAvailable(state, o)) &&
   Date.now() - Date.parse(request.createdAt) > 86400000;
+const OFFER_REVIEW_LABELS = {
+  pending: "На проверке",
+  rejected: "Отклонено администратором",
+} as const;
+
 export const offerPresentation = (
   state: DemoState,
   offer: Offer,
@@ -60,15 +69,19 @@ export const offerPresentation = (
       ? offer.closeReason === "sold"
         ? "Продано"
         : "Не выбрано"
-      : !available
+      : offer.review !== "approved"
+        ? OFFER_REVIEW_LABELS[offer.review]
+        : !available
         ? "Недоступно"
+        : offer.reservedElsewhere && offer.state !== "transferred"
+          ? "Зарезервирован по другому запросу"
         : offer.disposition === "rejected"
           ? "Не подходит"
           : (
               {
                 sent: "Предложено",
                 interested: "Интерес",
-                transferred: "Передано в CRM",
+                transferred: "Зарезервировано",
                 unavailable: "Недоступно",
               } as const
             )[offer.state];
@@ -82,6 +95,14 @@ export const offerPresentation = (
       available &&
       offer.disposition !== "rejected",
     canReject: actor.role === "broker" && editable && available,
+    canResubmit:
+      actor.role === "partner" &&
+      editable &&
+      offer.review === "rejected" &&
+      !["closed", "unavailable"].includes(offer.state) &&
+      state.properties.some(
+        (p) => p.id === offer.propertyId && p.availability === "active",
+      ),
     canRestore:
       actor.role === "broker" &&
       editable &&

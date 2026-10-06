@@ -38,7 +38,7 @@ export function TransferPanel({ role, toast }: PanelProps) {
       requestId: params.requestId,
     });
     if (!error)
-      toast("Запрос передан в CRM", "Администратор проведёт сделку или вернёт запрос");
+      toast("Объекты зарезервированы", "Администратор проведёт финальную проверку");
   };
 
   const confirm = async (values: TransferConfirmValues) => {
@@ -52,7 +52,12 @@ export function TransferPanel({ role, toast }: PanelProps) {
             transferId: transfer.id,
             propertyId: values.soldPropertyId,
           }
-        : { type: "RETURN", actor, transferId: transfer.id },
+        : {
+            type: "RETURN",
+            actor,
+            transferId: transfer.id,
+            reason: values.returnReason,
+          },
     );
     setConfirmMode(null);
     if (error) return;
@@ -64,14 +69,15 @@ export function TransferPanel({ role, toast }: PanelProps) {
   return (
     <>
       <Overlay
-        title={transfer ? `Передача ${transfer.id}` : "Передать в CRM"}
+        title={transfer ? `Резерв ${transfer.id}` : "Зарезервировать"}
         modal
         onClose={closePanel}
       >
         {request && role !== "partner" ? (
           <>
             <p className={NOTICE}>
-              Администратор платформы проведёт сделку или вернёт запрос в работу.
+              Администратор проведёт финальную проверку: подтвердит сделку или
+              вернёт запрос в работу с указанием причины.
             </p>
             <h3 className="mt-20">
               {params.requestId} · {client?.name}

@@ -28,8 +28,8 @@ export function SendOfferPanel({ role, toast }: PanelProps) {
     setSending(false);
     if (error) return;
     toast(
-      "Предложения отправлены брокеру",
-      `Объектов: ${draft.length} · брокер уже видит их в рабочем экране`,
+      "Предложения отправлены на проверку",
+      `Объектов: ${draft.length} · брокер увидит их после одобрения администратором`,
     );
     closePanel();
   };
@@ -39,7 +39,8 @@ export function SendOfferPanel({ role, toast }: PanelProps) {
       {role === "partner" && request ? (
         <>
           <p className={NOTICE}>
-            Брокер сразу увидит выбранные объекты в своём рабочем экране.
+            Предложения сначала проверит администратор. Брокер увидит
+            объекты после одобрения.
           </p>
           <h3 className="mt-20">{params.requestId}</h3>
           {draft.map((p) => (

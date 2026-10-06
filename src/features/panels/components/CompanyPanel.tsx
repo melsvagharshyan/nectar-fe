@@ -2,6 +2,7 @@ import { closePanel, navigate, panel } from "../../../app/router";
 import { Avatar, Button, Overlay, OverlayFooter } from "../../../components/ui";
 import { usePanelContext } from "../utils/hooks";
 import type { PanelProps } from "../utils/types";
+import { CompanyAccounts } from "./CompanyAccounts";
 import { CompanyRecords } from "./CompanyRecords";
 import { DeniedNotice } from "./DeniedNotice";
 import { BOX, RECORD, ROW } from "../../../utils/styles";
@@ -37,6 +38,10 @@ export function CompanyPanel({ role }: Pick<PanelProps, "role">) {
                   <small>{e.phone}</small>
                 </div>
               ))}
+          </div>
+          <div className={cn(BOX, "mt-20")}>
+            <h3>Аккаунты</h3>
+            <CompanyAccounts companyId={company.id} />
           </div>
           <div className={cn(BOX, "mt-20")}>
             <h3>{isRussian ? "Клиенты и запросы" : "Объекты и предложения"}</h3>

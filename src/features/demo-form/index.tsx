@@ -15,7 +15,7 @@ export type { DemoFormKind } from "./utils/types";
 
 export function DemoForm(props: DemoFormProps) {
   const { kind, id } = props;
-  const { form, records, dirtyClose, submit, isMapOpen, setMapOpen } =
+  const { form, records, reReview, dirtyClose, submit, isMapOpen, setMapOpen } =
     useDemoForm(props);
   const districts = useWatch({ control: form.control, name: "districts" });
   const { isSubmitting } = form.formState;
@@ -31,6 +31,13 @@ export function DemoForm(props: DemoFormProps) {
         ) : (
           <FormProvider {...form}>
             <form id={DEMO_FORM_ID} className={FORM} onSubmit={submit} noValidate>
+              {reReview && (
+                <p className={NOTICE}>
+                  После сохранения запрос снова уйдёт на проверку администратору.
+                  До одобрения партнёры его не увидят, а бронирование
+                  предложений будет недоступно.
+                </p>
+              )}
               {kind === "client" ? (
                 <ClientFields staff={records.staff} />
               ) : kind === "request" ? (

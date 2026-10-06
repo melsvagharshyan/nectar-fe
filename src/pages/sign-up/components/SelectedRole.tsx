@@ -1,8 +1,8 @@
 import { Button, Icon } from "../../../components/ui";
-import type { Role } from "../../../demo/types";
+import type { SignUpRole } from "../../../api/auth-api-ts/types";
 import { ROLE_OPTIONS } from "../utils/constants";
 
-export function SelectedRole({ role, onChange }: { role: Role; onChange: () => void }) {
+export function SelectedRole({ role, onChange }: { role: SignUpRole; onChange: () => void }) {
   const { icon, title } = ROLE_OPTIONS[role];
   return (
     <div className="flex items-center gap-12 rounded-[12px] border border-accent-edge bg-accent-tint px-14 py-10">

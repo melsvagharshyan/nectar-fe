@@ -1,7 +1,7 @@
 import type { DemoEvent } from "../../demo/types";
 import type { CursorPage } from "../pagination";
 
-export type NotificationFilter = "all" | "new" | "crm";
+export type NotificationFilter = "all" | "new" | "crm" | "review";
 
 export interface NotificationsArgs {
   filter?: NotificationFilter;

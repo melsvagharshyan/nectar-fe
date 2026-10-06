@@ -69,7 +69,13 @@ export function Catalog({ role }: { role: Role }) {
             onToggleFilters={catalog.toggleFilters}
           />
           {!properties.length && !catalog.loading ? (
-            <Empty text="Объекты не найдены">
+            <Empty
+              text={
+                role === "broker"
+                  ? "Здесь появятся объекты из одобренных предложений по вашим запросам"
+                  : "Объекты не найдены"
+              }
+            >
               <Button onClick={catalog.reset}>Сбросить фильтры</Button>
             </Empty>
           ) : catalog.view === "grid" ? (

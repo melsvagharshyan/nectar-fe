@@ -6,9 +6,11 @@ export const WORKSPACE_STEPS = ["Клиенты", "Запросы", "Объек�
 export const STAGE_FILTER_OPTIONS: SelectOption[] = [
   { value: "attention", label: "Требует внимания" },
   { value: "created", label: "Создан" },
+  { value: "pending_review", label: "На проверке" },
+  { value: "rejected", label: "Отклонён" },
   { value: "in_progress", label: "В работе" },
   { value: "has_offers", label: "Есть предложения" },
-  { value: "crm", label: "Передано в CRM" },
+  { value: "crm", label: "Зарезервировано" },
   { value: "sold", label: "Продано" },
 ];
 
@@ -30,7 +32,7 @@ export const DEFAULT_OFFER_FILTERS: OfferFilters = {
 export const OFFER_TOASTS = {
   booked: {
     title: "Объект забронирован",
-    description: "Он появится в передаче в CRM",
+    description: "Его можно будет зарезервировать",
   },
   unbooked: {
     title: "Бронь снята",

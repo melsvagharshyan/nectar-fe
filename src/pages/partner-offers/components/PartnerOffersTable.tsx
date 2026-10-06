@@ -1,19 +1,22 @@
 import type { TableColumnsType } from "antd";
 import { navigate, panel } from "../../../app/router";
 import { Button, DataTable, type TablePaging } from "../../../components/ui";
+import type { offerPresentation } from "../../../demo/selectors";
 import { formatDate, money } from "../../../utils/helpers";
 import type { PartnerData, PartnerOffer } from "../utils/types";
 
 export function PartnerOffersTable({
   offers,
   propertyOf,
-  resultOf,
+  presentationOf,
+  onResubmit,
   paging,
   loading,
 }: {
   offers: PartnerOffer[];
   propertyOf: (offer: PartnerOffer) => PartnerData["properties"][number];
-  resultOf: (offer: PartnerOffer) => string;
+  presentationOf: (offer: PartnerOffer) => ReturnType<typeof offerPresentation>;
+  onResubmit: (offer: PartnerOffer) => void;
   paging: TablePaging;
   loading: boolean;
 }) {
@@ -56,7 +59,27 @@ export function PartnerOffersTable({
     {
       title: "Результат",
       key: "result",
-      render: (_, o) => resultOf(o),
+      render: (_, o) => {
+        const presentation = presentationOf(o);
+        return (
+          <>
+            {presentation.label}
+            {o.review === "rejected" && o.rejectReason && (
+              <small>Причина: {o.rejectReason}</small>
+            )}
+            {presentation.canResubmit && (
+              <div className="mt-6 flex flex-wrap gap-6">
+                <Button onClick={() => panel("property", { object: o.propertyId })}>
+                  Исправить объект
+                </Button>
+                <Button variant="primary" onClick={() => onResubmit(o)}>
+                  Отправить повторно
+                </Button>
+              </div>
+            )}
+          </>
+        );
+      },
     },
   ];
   return (

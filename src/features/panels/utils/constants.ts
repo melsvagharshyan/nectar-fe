@@ -6,8 +6,9 @@ export const FORM_PANEL_SUFFIX = "-form";
 export const NOTIFICATION_FILTERS: TabItem<NotificationFilter>[] = [
   { id: "all", label: "Все" },
   { id: "new", label: "Новые" },
+  { id: "review", label: "Проверка" },
   { id: "attention", label: "Требует внимания" },
-  { id: "crm", label: "CRM / результат" },
+  { id: "crm", label: "Резерв / результат" },
 ];
 
 export const DIRECTORY_TABS: TabItem<DirectoryTab>[] = [

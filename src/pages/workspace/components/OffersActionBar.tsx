@@ -30,7 +30,7 @@ export function OffersActionBar({
           </strong>
           <small className="mt-2 block max-xs:text-[11px]">
             {transfer
-              ? "Выбор зафиксирован. Изменение доступно после возврата."
+              ? "Резерв на финальной проверке. Изменение доступно после возврата."
               : selected.length
                 ? "Готово к следующему шагу"
                 : "Отметьте интересные объекты"}
@@ -39,7 +39,7 @@ export function OffersActionBar({
       </div>
       {admin ? (
         <Button disabled={!transfer} onClick={openTransfer}>
-          Посмотреть передачу
+          Посмотреть резерв
         </Button>
       ) : (
         <Button
@@ -48,7 +48,7 @@ export function OffersActionBar({
           disabled={request.stage === "sold" || (!transfer && !selected.length)}
           onClick={openTransfer}
         >
-          {transfer ? "Посмотреть передачу" : "Передать в CRM"}
+          {transfer ? "Посмотреть резерв" : "Зарезервировать"}
           <Icon name="arrow" className="size-15" />
         </Button>
       )}

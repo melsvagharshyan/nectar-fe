@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { AdminSignIn } from "../../pages/admin-sign-in";
 import { SignIn } from "../../pages/sign-in";
 import { SignUp } from "../../pages/sign-up";
 import { UiKit } from "../../pages/ui-kit";
@@ -24,7 +25,13 @@ export function Shell() {
   if (!user)
     return (
       <main className="h-dvh overflow-auto">
-        {path === AUTH_ROUTES.signUp ? <SignUp /> : <SignIn />}
+        {path === AUTH_ROUTES.signUp ? (
+          <SignUp />
+        ) : path === AUTH_ROUTES.adminSignIn ? (
+          <AdminSignIn />
+        ) : (
+          <SignIn />
+        )}
       </main>
     );
   return (

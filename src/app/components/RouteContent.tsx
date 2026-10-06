@@ -13,6 +13,7 @@ import {
   PartnerOffers,
   PartnerWorkspace,
   Profile,
+  Registrations,
   Settings,
   Workspace,
 } from "../utils/pages";
@@ -72,6 +73,7 @@ function RoutePage({
   if (role === "admin" && screen === "overview")
     return <Analytics role={role} overview />;
   if (role === "admin" && screen === "companies") return <Companies />;
+  if (role === "admin" && screen === "registrations") return <Registrations />;
   if (role === "admin" && screen === "workspace")
     return route.params.has("company") ? <Workspace admin /> : <AdminWorkspace />;
   return (

@@ -8,6 +8,8 @@ export interface MenuItem {
   id: string;
   label: string;
   icon: IconName;
+  /** Bootstrap counter shown next to the label when above zero. */
+  badge?: "pendingRegistrations";
 }
 
 export interface ShellLocation {

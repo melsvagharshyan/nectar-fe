@@ -66,6 +66,8 @@ export const TYPE_SCALE = [
 
 export const BADGE_SAMPLES = [
   "active",
+  "pending_review",
+  "rejected",
   "has_offers",
   "crm",
   "draft",

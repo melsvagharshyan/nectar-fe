@@ -53,7 +53,7 @@ export function SelectionColumn({ model: m }: { model: PartnerWorkspaceModel }) 
         <small className="mt-6 block text-center max-xs:text-[10px]">
           {locked
             ? "Запрос недоступен для новых предложений"
-            : "Брокер увидит предложения сразу после отправки"}
+            : "Брокер увидит предложения после одобрения администратором"}
         </small>
       </div>
     </section>

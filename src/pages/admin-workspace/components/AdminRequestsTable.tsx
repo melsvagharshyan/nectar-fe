@@ -60,6 +60,7 @@ export function AdminRequestsTable({
       key: "action",
       render: (_, r) => {
         const inCrm = r.stage === "crm";
+        const toReview = inCrm || r.stage === "pending_review";
         return (
           <Button
             onClick={() =>
@@ -69,7 +70,7 @@ export function AdminRequestsTable({
               })
             }
           >
-            {inCrm ? "Рассмотреть" : "Открыть"}
+            {toReview ? "Рассмотреть" : "Открыть"}
           </Button>
         );
       },

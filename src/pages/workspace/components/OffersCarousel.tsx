@@ -1,8 +1,15 @@
 import { Button, Empty } from "../../../components/ui";
 import type { Request } from "../../../demo/types";
+import { SUBMITTABLE_REQUEST_STAGES } from "../../../utils/constants";
 import type { WorkspaceModel } from "../utils/hooks";
 import { CAROUSEL } from "../utils/styles";
 import { OfferCard } from "./OfferCard";
+
+const REVIEW_HINTS: Partial<Record<Request["stage"], string>> = {
+  created: "Отправьте запрос на проверку, чтобы партнёры начали подбор",
+  pending_review: "Запрос на проверке у администратора",
+  rejected: "Запрос отклонён — исправьте его и отправьте повторно",
+};
 
 export function OffersCarousel({
   model: m,
@@ -25,24 +32,24 @@ export function OffersCarousel({
           text={
             hasOffers
               ? "Нет предложений по фильтру"
-              : "Предложения пока не получены"
+              : (REVIEW_HINTS[request.stage] ?? "Предложения пока не получены")
           }
         >
           {hasOffers && (
             <Button onClick={m.resetOfferFilters}>Сбросить фильтры</Button>
           )}
-          {request.stage === "created" && !admin && (
+          {SUBMITTABLE_REQUEST_STAGES.includes(request.stage) && !admin && (
             <Button
               variant="primary"
               onClick={() =>
                 m.dispatch({
-                  type: "START",
+                  type: "SUBMIT",
                   actor: m.actor,
                   requestId: request.id,
                 })
               }
             >
-              Начать подбор
+              Отправить на проверку
             </Button>
           )}
         </Empty>

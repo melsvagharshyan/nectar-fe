@@ -21,17 +21,17 @@ export function TransferActions({
         <Button variant="primary" onClick={() => onConfirm("sold")}>
           Продано
         </Button>
-        <Button onClick={() => onConfirm("return")}>Вернуть в запросы</Button>
+        <Button onClick={() => onConfirm("return")}>Вернуть в работу</Button>
       </>
     ) : (
       <p className="text-muted">
-        Выбор зафиксирован. Вернуть запрос может администратор.
+        Резерв на финальной проверке у администратора.
       </p>
     );
   if (role !== "broker") return null;
   return (
     <Button variant="primary" disabled={!canTransfer} onClick={onTransfer}>
-      Передать в CRM
+      Зарезервировать
     </Button>
   );
 }

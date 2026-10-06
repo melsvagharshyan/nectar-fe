@@ -21,14 +21,15 @@ export const useCurrentUser = () => useAppSelector((s) => s.auth.user);
 
 export function useSignOut() {
   const dispatch = useAppDispatch();
+  const role = useCurrentUser()?.role;
   return useCallback(async () => {
     // The httpOnly cookie can only be cleared by the server; sign out locally regardless.
     await dispatch(authApi.endpoints.signOut.initiate());
     dispatch(signedOut());
     dispatch(api.util.resetApiState());
-    redirect(AUTH_ROUTES.signIn);
+    redirect(role === "admin" ? AUTH_ROUTES.adminSignIn : AUTH_ROUTES.signIn);
     notify.info("Вы вышли из аккаунта", { description: "До скорой встречи!" });
-  }, [dispatch]);
+  }, [dispatch, role]);
 }
 
 const { endpoints } = workspaceApi;
@@ -78,7 +79,10 @@ export function useWorkspaceDispatch() {
             );
           case "RETURN":
             return appDispatch(
-              endpoints.returnTransfer.initiate(action.transferId),
+              endpoints.returnTransfer.initiate({
+                transferId: action.transferId,
+                reason: action.reason,
+              }),
             );
           case "SELL":
             return appDispatch(
@@ -87,9 +91,31 @@ export function useWorkspaceDispatch() {
                 propertyId: action.propertyId,
               }),
             );
-          case "START":
+          case "SUBMIT":
             return appDispatch(
-              endpoints.startRequest.initiate(action.requestId),
+              endpoints.submitRequest.initiate(action.requestId),
+            );
+          case "APPROVE_OFFER":
+            return appDispatch(endpoints.approveOffer.initiate(action.offerId));
+          case "DECLINE_OFFER":
+            return appDispatch(
+              endpoints.declineOffer.initiate({
+                offerId: action.offerId,
+                reason: action.reason,
+              }),
+            );
+          case "RESUBMIT_OFFER":
+            return appDispatch(endpoints.resubmitOffer.initiate(action.offerId));
+          case "APPROVE_REQUEST":
+            return appDispatch(
+              endpoints.approveRequest.initiate(action.requestId),
+            );
+          case "REJECT_REQUEST":
+            return appDispatch(
+              endpoints.rejectRequest.initiate({
+                requestId: action.requestId,
+                reason: action.reason,
+              }),
             );
         }
       };

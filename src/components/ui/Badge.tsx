@@ -4,8 +4,11 @@ import { cn } from "../../utils/helpers";
 const POSITIVE = "text-success bg-success-tint";
 const TRANSFER = "text-accent-text bg-accent-tint";
 const NEUTRAL = "text-muted bg-fill";
+const DANGER = "text-danger bg-danger-tint";
 
 const BADGE_TONES: Record<string, string> = {
+  pending_review: "text-warning bg-warning-tint",
+  rejected: DANGER,
   has_offers: POSITIVE,
   interested: POSITIVE,
   active: POSITIVE,
@@ -14,7 +17,7 @@ const BADGE_TONES: Record<string, string> = {
   demo_transferred: TRANSFER,
   sold: NEUTRAL,
   closed: NEUTRAL,
-  unavailable: "text-danger bg-danger-tint",
+  unavailable: DANGER,
 };
 
 export function Badge({

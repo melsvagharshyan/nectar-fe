@@ -32,7 +32,7 @@ export const EMPTY_CATALOG_FILTERS: CatalogFilters = {
 };
 
 export const CATALOG_TITLES: Record<Role, string> = {
-  broker: "База объектов",
+  broker: "Объекты из предложений",
   partner: "Управление базой объектов",
   admin: "Управление базой объектов",
 };

@@ -21,3 +21,18 @@ export interface SellRequest {
   transferId: string;
   propertyId: string;
 }
+
+export interface RejectRequestArgs {
+  requestId: string;
+  reason: string;
+}
+
+export interface ReturnTransferArgs {
+  transferId: string;
+  reason: string;
+}
+
+export interface DeclineOfferArgs {
+  offerId: string;
+  reason: string;
+}
