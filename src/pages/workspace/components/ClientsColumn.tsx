@@ -9,6 +9,7 @@ import type { WorkspaceModel } from "../utils/hooks";
 import {
   CLIENT_FILTER,
   CLIENT_TABS,
+  CLIENT_TOOLS,
   CLIENTS_COLUMN,
   COLUMN_TITLE,
   COUNT_BUTTON,
@@ -18,6 +19,7 @@ import {
   TOOLS,
 } from "../utils/styles";
 import { ClientFiltersPanel } from "./ClientFiltersPanel";
+import { ClientRequests } from "./ClientRequests";
 import { ClientTab } from "./ClientTab";
 
 export function ClientsColumn({
@@ -52,7 +54,7 @@ export function ClientsColumn({
           </Button>
         )}
       </div>
-      <div className={TOOLS}>
+      <div className={cn(TOOLS, CLIENT_TOOLS)}>
         <Controller
           name="search"
           control={m.clientForm.control}
@@ -89,32 +91,21 @@ export function ClientsColumn({
         onLoadMore={m.clientsPaging.loadMore}
       >
         {m.clients.map((c, index) => {
-          const clientRequests = m.data.requests.filter(
-            (r) => r.clientId === c.id,
-          );
+          const active = m.client?.id === c.id;
           return (
             <ClientTab
               key={c.id}
               client={c}
               index={index}
-              active={m.client?.id === c.id}
-              requests={clientRequests}
-              activeRequestId={m.request?.id}
-              offerCount={(requestId) =>
-                m.data.offers.filter((o) => o.requestId === requestId).length
-              }
-              attention={clientRequests.some((r) =>
-                requiresAttention(m.state, r),
+              active={active}
+              requestCount={active ? m.requestsPaging.total : undefined}
+              attention={m.data.requests.some(
+                (r) => r.clientId === c.id && requiresAttention(m.state, r),
               )}
-              onSelect={() => {
-                m.select(c.id);
-                m.setStep(1);
-              }}
-              onSelectRequest={(requestId) => {
-                m.select(c.id, requestId);
-                m.setStep(2);
-              }}
-            />
+              onSelect={() => m.select(c.id)}
+            >
+              {active && <ClientRequests model={m} admin={admin} />}
+            </ClientTab>
           );
         })}
         {!m.clients.length && !m.clientsPaging.loading && (
