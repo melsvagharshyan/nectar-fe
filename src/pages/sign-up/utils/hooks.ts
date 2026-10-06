@@ -21,14 +21,11 @@ export function useSignUpForm() {
 
   const submit = form.handleSubmit(async (values) => {
     const result = await signUp(toSignUpRequest(values));
+    // A taken email is accepted like any other, so the form can't be used to find accounts.
     if (result.error) {
-      const message = getApiErrorMessage(result.error);
-      // 409: the email already has an account or a pending application.
-      if ("status" in result.error && result.error.status === 409) {
-        form.setError("email", { message }, { shouldFocus: true });
-        return;
-      }
-      notify.error("Не удалось отправить заявку", { description: message });
+      notify.error("Не удалось отправить заявку", {
+        description: getApiErrorMessage(result.error),
+      });
       return;
     }
     setSubmittedEmail(result.data.email);
