@@ -34,12 +34,16 @@ export function RequestDetails({
   const canSubmit =
     role === "broker" && SUBMITTABLE_REQUEST_STAGES.includes(request.stage);
   const canReview = role === "admin" && request.stage === "pending_review";
-  const lastReturn = OPEN_REQUEST_STAGES.includes(request.stage)
-    ? state.transfers
-        .filter((t) => t.requestId === request.id)
-        .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
-        .find((t, i) => i === 0 && t.state === "returned" && t.returnReason)
-    : undefined;
+  // The admin's reason is shown only while the latest reservation is the returned one.
+  const latestTransfer = state.transfers
+    .filter((t) => t.requestId === request.id)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
+  const lastReturn =
+    OPEN_REQUEST_STAGES.includes(request.stage) &&
+    latestTransfer?.state === "returned" &&
+    latestTransfer.returnReason
+      ? latestTransfer
+      : undefined;
   const offerItems = projected.offers
     .filter((o) => o.requestId === request.id)
     .map((o) => ({
