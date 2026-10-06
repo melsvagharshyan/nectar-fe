@@ -17,6 +17,8 @@ export const EMPTY_METRICS: Metrics = {
 
 export const ANALYTICS_STAGES: RequestStage[] = [
   "created",
+  "pending_review",
+  "rejected",
   "in_progress",
   "has_offers",
   "crm",

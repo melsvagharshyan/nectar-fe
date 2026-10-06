@@ -1,5 +1,5 @@
 import { Button, Icon } from "../../../components/ui";
-import type { Role } from "../../../demo/types";
+import type { SignUpRole } from "../../../api/auth-api-ts/types";
 import { cn } from "../../../utils/helpers";
 import { ROLE_OPTIONS } from "../utils/constants";
 
@@ -8,7 +8,7 @@ export function RoleCard({
   checked,
   onSelect,
 }: {
-  role: Role;
+  role: SignUpRole;
   checked: boolean;
   onSelect: () => void;
 }) {

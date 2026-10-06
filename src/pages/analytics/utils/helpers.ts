@@ -7,13 +7,13 @@ export const metricCards = (role: Role, m: Metrics): MetricCard[] =>
         { name: "Клиенты", value: m.clients, view: "" },
         { name: "Активные запросы", value: m.activeRequests, view: "active" },
         { name: "Предложения", value: m.offers, view: "offers" },
-        { name: "Передано в CRM", value: m.activeTransfers, view: "crm" },
+        { name: "Зарезервировано", value: m.activeTransfers, view: "crm" },
       ]
     : [
         { name: "Активные запросы", value: m.activeRequests, view: "active" },
         { name: "Предложения", value: m.offers, view: "offers" },
         { name: "С интересом", value: m.interested, view: "interested" },
-        { name: "Передано в CRM", value: m.activeTransfers, view: "crm" },
+        { name: "Зарезервировано", value: m.activeTransfers, view: "crm" },
         { name: "Продано", value: m.sold, view: "sold" },
       ];
 

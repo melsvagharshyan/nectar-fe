@@ -39,12 +39,20 @@ export interface SignInRequest {
   password: string;
 }
 
+/** Admins are provisioned separately and never sign up. */
+export type SignUpRole = Exclude<Role, "admin">;
+
 export interface SignUpRequest {
-  role: Role;
+  role: SignUpRole;
   name: string;
   email: string;
   password: string;
   phone?: string;
-  companyName?: string;
-  adminCode?: string;
+  companyName: string;
+}
+
+/** Sign-up only files an application; an admin creates the account on approval. */
+export interface SignUpResponse {
+  status: "pending";
+  email: string;
 }

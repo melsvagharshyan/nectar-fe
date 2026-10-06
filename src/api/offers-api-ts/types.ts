@@ -4,6 +4,7 @@ import type { AdminRequestArgs } from "../requests-api-ts/types";
 
 export interface OffersTableArgs extends AdminRequestArgs {
   state?: string;
+  review?: "pending" | "approved" | "rejected";
 }
 
 export type OffersTable = WithSlice<OffsetPage<Offer>>;

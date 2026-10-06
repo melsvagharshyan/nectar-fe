@@ -13,7 +13,11 @@ export default defineConfig({
   webServer: {
     command: `npm run dev -- --port ${PORT} --strictPort`,
     url: `http://localhost:${PORT}/`,
-    env: { BROWSER: "none" },
+    // E2E_API_URL points both the app and the specs at the same backend (default: .env).
+    env: {
+      BROWSER: "none",
+      ...(process.env.E2E_API_URL && { VITE_API_URL: process.env.E2E_API_URL }),
+    },
     reuseExistingServer: !process.env.CI,
   },
 });

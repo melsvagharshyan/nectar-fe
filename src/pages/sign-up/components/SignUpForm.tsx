@@ -2,7 +2,7 @@ import { useFormContext } from "react-hook-form";
 import { ControlledField } from "../../../components/form";
 import { AUTH_SUBMIT_BUTTON } from "../../../components/auth-layout";
 import { Button } from "../../../components/ui";
-import type { Role } from "../../../demo/types";
+import type { SignUpRole } from "../../../api/auth-api-ts/types";
 import { FORM, FORM_GRID } from "../../../utils/styles";
 import { MIN_PASSWORD_LENGTH, ROLE_OPTIONS, SIGN_UP_FORM_ID } from "../utils/constants";
 import type { SignUpFormValues } from "../utils/types";
@@ -13,7 +13,7 @@ export function SignUpForm({
   onSubmit,
   onChangeRole,
 }: {
-  role: Role;
+  role: SignUpRole;
   onSubmit: () => void;
   onChangeRole: () => void;
 }) {
@@ -28,24 +28,13 @@ export function SignUpForm({
         <ControlledField control={control} name="email" label="Email" type="email" placeholder="name@example.com" autoComplete="email" />
         <ControlledField control={control} name="phone" label="Телефон · необязательно" type="tel" placeholder={phonePlaceholder} autoComplete="tel" />
       </div>
-      {company ? (
-        <ControlledField
-          control={control}
-          name="companyName"
-          label={company.label}
-          placeholder={company.placeholder}
-          autoComplete="organization"
-        />
-      ) : (
-        <ControlledField
-          control={control}
-          name="adminCode"
-          label="Код администратора"
-          type="password"
-          placeholder="Код от владельца платформы"
-          autoComplete="off"
-        />
-      )}
+      <ControlledField
+        control={control}
+        name="companyName"
+        label={company.label}
+        placeholder={company.placeholder}
+        autoComplete="organization"
+      />
       <div className={FORM_GRID}>
         <ControlledField
           control={control}
@@ -64,13 +53,16 @@ export function SignUpForm({
           autoComplete="new-password"
         />
       </div>
+      <p className="text-center text-[12px] text-muted">
+        Доступ откроется после проверки заявки администратором
+      </p>
       <Button
         type="submit"
         variant="primary"
         className={AUTH_SUBMIT_BUTTON}
         disabled={formState.isSubmitting}
       >
-        {formState.isSubmitting ? "Создаём аккаунт…" : "Создать аккаунт"}
+        {formState.isSubmitting ? "Отправляем…" : "Отправить заявку"}
       </Button>
     </form>
   );

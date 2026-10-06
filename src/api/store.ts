@@ -14,6 +14,8 @@ import "./offers-api-ts/offersApi";
 import "./notifications-api-ts/notificationsApi";
 import "./analytics-api-ts/analyticsApi";
 import "./companies-api-ts/companiesApi";
+import "./registrations-api-ts/registrationsApi";
+import "./accounts-api-ts/accountsApi";
 
 export const store = configureStore({
   reducer: {
@@ -23,13 +25,14 @@ export const store = configureStore({
   middleware: (getDefault) => getDefault().concat(api.middleware),
 });
 
-let persisted = store.getState().auth;
+let persisted = store.getState().auth.user;
 store.subscribe(() => {
-  const { auth } = store.getState();
-  if (auth === persisted) return;
-  persisted = auth;
-  setStoredUser(auth.user);
-  if (!auth.user) store.dispatch(api.util.resetApiState());
+  // Only user changes matter here, not e.g. the sign-out reason.
+  const { user } = store.getState().auth;
+  if (user === persisted) return;
+  persisted = user;
+  setStoredUser(user);
+  if (!user) store.dispatch(api.util.resetApiState());
 });
 
 export type RootState = ReturnType<typeof store.getState>;

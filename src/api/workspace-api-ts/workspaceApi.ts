@@ -3,7 +3,10 @@ import { notificationsApi } from "../notifications-api-ts/notificationsApi";
 import type {
   DraftToggleRequest,
   InterestRequest,
+  DeclineOfferArgs,
   MutationResult,
+  RejectRequestArgs,
+  ReturnTransferArgs,
   SellRequest,
   SendOffersRequest,
 } from "./types";
@@ -53,7 +56,14 @@ export const workspaceApi = api.injectEndpoints({
       });
 
     return {
-      startRequest: action(post<string>((id) => `/requests/${id}/start`)),
+      submitRequest: action(post<string>((id) => `/requests/${id}/submit`)),
+      approveRequest: action(post<string>((id) => `/requests/${id}/approve`)),
+      rejectRequest: action(
+        post<RejectRequestArgs>(
+          ({ requestId }) => `/requests/${requestId}/reject`,
+          ({ reason }) => ({ reason }),
+        ),
+      ),
       transferRequest: action(
         post<string>((id) => `/requests/${id}/transfer`),
       ),
@@ -76,8 +86,22 @@ export const workspaceApi = api.injectEndpoints({
         ),
       ),
       rejectOffer: action(post<string>((id) => `/offers/${id}/reject`)),
+      approveOffer: action(post<string>((id) => `/offers/${id}/approve`)),
+      // Admin review rejection; `rejectOffer` is the broker's "not a fit".
+      declineOffer: action(
+        post<DeclineOfferArgs>(
+          ({ offerId }) => `/offers/${offerId}/decline`,
+          ({ reason }) => ({ reason }),
+        ),
+      ),
+      resubmitOffer: action(post<string>((id) => `/offers/${id}/resubmit`)),
       restoreOffer: action(post<string>((id) => `/offers/${id}/restore`)),
-      returnTransfer: action(post<string>((id) => `/transfers/${id}/return`)),
+      returnTransfer: action(
+        post<ReturnTransferArgs>(
+          ({ transferId }) => `/transfers/${transferId}/return`,
+          ({ reason }) => ({ reason }),
+        ),
+      ),
       sellTransfer: action(
         post<SellRequest>(
           ({ transferId }) => `/transfers/${transferId}/sell`,
@@ -98,12 +122,17 @@ export const workspaceApi = api.injectEndpoints({
 });
 
 export const {
-  useStartRequestMutation,
+  useSubmitRequestMutation,
+  useApproveRequestMutation,
+  useRejectRequestMutation,
   useTransferRequestMutation,
   useToggleDraftMutation,
   useSendOffersMutation,
   useSetInterestMutation,
   useRejectOfferMutation,
+  useApproveOfferMutation,
+  useDeclineOfferMutation,
+  useResubmitOfferMutation,
   useRestoreOfferMutation,
   useReturnTransferMutation,
   useSellTransferMutation,

@@ -6,12 +6,21 @@ import { Button } from "../../components/ui";
 import { RoleStep } from "./components/RoleStep";
 import { SignUpForm } from "./components/SignUpForm";
 import { StepIndicator } from "./components/StepIndicator";
+import { SubmittedStep } from "./components/SubmittedStep";
 import { SIGN_UP_STEPS } from "./utils/constants";
 import { useSignUpForm } from "./utils/hooks";
 
 export function SignUp() {
-  const { form, role, step, goToDetails, goToRole, submit } = useSignUpForm();
+  const { form, role, step, submittedEmail, goToDetails, goToRole, submit } =
+    useSignUpForm();
   const { title, subtitle } = SIGN_UP_STEPS[step];
+
+  if (step === "submitted")
+    return (
+      <AuthLayout title={title} subtitle={subtitle} footer={null}>
+        <SubmittedStep email={submittedEmail} />
+      </AuthLayout>
+    );
 
   return (
     <AuthLayout

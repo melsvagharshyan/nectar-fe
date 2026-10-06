@@ -22,7 +22,7 @@ export function StageBreakdown({
         </div>
       ))}
       <p className="text-muted mt-20">
-        Дошли до CRM: {m.reachedCrm} из {m.requests} запросов, {crmShare(m)}
+        Дошли до резерва: {m.reachedCrm} из {m.requests} запросов, {crmShare(m)}
         %.
       </p>
     </div>

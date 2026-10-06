@@ -21,28 +21,35 @@ export const ROLE_HOMES: Record<Role, string> = {
 
 export const STATUS_LABELS: Record<string, string> = {
   created: "Создан",
+  pending_review: "На проверке",
+  rejected: "Отклонён",
   in_progress: "В работе",
   has_offers: "Есть предложения",
-  crm: "Передано в CRM",
+  crm: "Зарезервировано",
   sold: "Продано",
   active: "Активен",
   draft: "Черновик",
   sent: "Отправлено",
   interested: "Интерес",
-  transferred: "Передано в CRM",
+  transferred: "Зарезервировано",
   closed: "Закрыто",
   unavailable: "Недоступно",
   returned: "Возвращено",
-  demo_transferred: "Передано в CRM",
+  demo_transferred: "Зарезервировано",
 };
 
 export const EVENT_NAMES: Record<string, string> = {
-  offers_sent: "Отправлены предложения",
+  offers_sent: "Предложение одобрено администратором",
   interest: "Изменён интерес к объекту",
-  transferred: "Передано в CRM",
-  returned: "Запрос возвращён в работу",
+  transferred: "Объекты зарезервированы",
+  returned: "Резерв возвращён в работу",
   sold: "Сделка завершена",
-  started: "Начат подбор",
+  started: "Запрос одобрен, начат подбор",
+  request_submitted: "Запрос отправлен на проверку",
+  request_approved: "Запрос снова одобрен после изменений",
+  request_rejected: "Запрос отклонён администратором",
+  offer_submitted: "Предложение отправлено на проверку",
+  offer_rejected: "Предложение отклонено администратором",
 };
 
 export const DISTRICTS = [
@@ -75,6 +82,8 @@ export const TYPES_WITHOUT_ROOMS: string[] = ["Участок", "Коммерц�
 
 export const REQUEST_STAGES: RequestStage[] = [
   "created",
+  "pending_review",
+  "rejected",
   "in_progress",
   "has_offers",
   "crm",
@@ -82,6 +91,9 @@ export const REQUEST_STAGES: RequestStage[] = [
 ];
 
 export const OPEN_REQUEST_STAGES: string[] = ["in_progress", "has_offers"];
+
+/** Stages a broker may send for admin review. */
+export const SUBMITTABLE_REQUEST_STAGES: string[] = ["created", "rejected"];
 
 export const ROOM_FILTER_OPTIONS = ["1", "2", "3", "4"];
 

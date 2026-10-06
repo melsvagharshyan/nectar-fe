@@ -7,6 +7,7 @@ import type {
   ChangePasswordRequest,
   SignInRequest,
   SignUpRequest,
+  SignUpResponse,
   UpdateProfileRequest,
   UserDto,
 } from "./types";
@@ -23,12 +24,9 @@ export const authApi = api.injectEndpoints({
       },
     }),
 
-    signUp: build.mutation<AuthResponse, SignUpRequest>({
+    // No session yet: the applicant can sign in once an admin approves.
+    signUp: build.mutation<SignUpResponse, SignUpRequest>({
       query: (body) => ({ url: `${base}/sign-up`, method: "POST", body }),
-      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
-        const data = await settled(queryFulfilled);
-        if (data) dispatch(signedIn(data.user));
-      },
     }),
 
     signOut: build.mutation<void, void>({

@@ -1,4 +1,5 @@
-import { Button, Icon } from "../../components/ui";
+import { useGetBootstrapQuery } from "../../api/bootstrap-api-ts/bootstrapApi";
+import { Button, Count, Icon } from "../../components/ui";
 import type { Role } from "../../demo/types";
 import { cn } from "../../utils/helpers";
 import { navigate, panel } from "../router";
@@ -17,25 +18,37 @@ export function HeaderNav({
   role: Role;
   screen: string | undefined;
 }) {
+  const { data: bootstrap } = useGetBootstrapQuery();
   return (
     <nav
       className="flex items-center gap-4 max-lg:order-3 max-lg:w-full max-lg:overflow-x-auto"
       aria-label="Основная навигация"
     >
-      {ROLE_MENUS[role].map(({ id, label, icon }) => (
-        <Button
-          key={id}
-          className={cn(NAV_TAB, screen === id && NAV_TAB_ACTIVE)}
-          aria-current={screen === id ? "page" : undefined}
-          disabled={DISABLED_MENU_ITEMS.includes(id)}
-          onClick={() =>
-            id === "clients" ? panel("directory") : navigate(`/${role}/${id}`)
-          }
-        >
-          <Icon name={icon} className="size-17 lg:max-xl:hidden" />
-          {label}
-        </Button>
-      ))}
+      {ROLE_MENUS[role].map(({ id, label, icon, badge }) => {
+        const count = badge ? (bootstrap?.[badge] ?? 0) : 0;
+        return (
+          <Button
+            key={id}
+            className={cn(NAV_TAB, screen === id && NAV_TAB_ACTIVE)}
+            aria-current={screen === id ? "page" : undefined}
+            disabled={DISABLED_MENU_ITEMS.includes(id)}
+            onClick={() =>
+              id === "clients" ? panel("directory") : navigate(`/${role}/${id}`)
+            }
+          >
+            <Icon name={icon} className="size-17 lg:max-xl:hidden" />
+            {label}
+            {count > 0 && (
+              <Count
+                className="min-w-18 bg-accent px-5 py-1 text-[10px] text-white"
+                aria-label={`${count} новых`}
+              >
+                {count}
+              </Count>
+            )}
+          </Button>
+        );
+      })}
     </nav>
   );
 }

@@ -5,6 +5,8 @@ export interface Actor {
 }
 export type RequestStage =
   | "created"
+  | "pending_review"
+  | "rejected"
   | "in_progress"
   | "has_offers"
   | "crm"
@@ -16,6 +18,7 @@ export type OfferState =
   | "transferred"
   | "closed"
   | "unavailable";
+export type OfferReview = "pending" | "approved" | "rejected";
 export type PropertyType =
   | "Квартира"
   | "Студия"
@@ -65,6 +68,10 @@ export interface Request {
   parking: string;
   view: string;
   amenities: string[];
+  submittedAt: string | null;
+  /** Admin's reason for the latest rejection; cleared on resubmit. */
+  rejectReason: string | null;
+  reviewedAt: string | null;
   createdAt: string;
 }
 export interface Property {
@@ -104,6 +111,13 @@ export interface Offer {
   disposition: "neutral" | "rejected";
   closeReason?: "sold" | "not_selected";
   matchScore: number;
+  /** Admin review; brokers only ever receive approved offers. */
+  review: OfferReview;
+  /** Its property is held by another request's active reservation. */
+  reservedElsewhere?: boolean;
+  /** Admin's reason for the latest rejection; cleared on resubmit. */
+  rejectReason: string | null;
+  reviewedAt: string | null;
   createdAt: string;
 }
 export interface Transfer {
@@ -112,6 +126,8 @@ export interface Transfer {
   offerIds: string[];
   state: "demo_transferred" | "returned" | "sold";
   soldPropertyId?: string;
+  /** Admin's reason for returning it; null for partners. */
+  returnReason: string | null;
   createdAt: string;
 }
 export interface DemoEvent {
@@ -122,7 +138,12 @@ export interface DemoEvent {
     | "transferred"
     | "returned"
     | "sold"
-    | "started";
+    | "started"
+    | "request_submitted"
+    | "request_approved"
+    | "request_rejected"
+    | "offer_submitted"
+    | "offer_rejected";
   requestId: string;
   propertyId?: string;
   createdAt: string;
@@ -161,6 +182,15 @@ export type DemoAction =
       actor: Actor;
       requestId: string;
     }
-  | { type: "RETURN"; actor: Actor; transferId: string }
+  | { type: "RETURN"; actor: Actor; transferId: string; reason: string }
   | { type: "SELL"; actor: Actor; transferId: string; propertyId: string }
-  | { type: "START"; actor: Actor; requestId: string };
+  | { type: "SUBMIT"; actor: Actor; requestId: string }
+  | { type: "APPROVE_OFFER" | "RESUBMIT_OFFER"; actor: Actor; offerId: string }
+  | { type: "DECLINE_OFFER"; actor: Actor; offerId: string; reason: string }
+  | { type: "APPROVE_REQUEST"; actor: Actor; requestId: string }
+  | {
+      type: "REJECT_REQUEST";
+      actor: Actor;
+      requestId: string;
+      reason: string;
+    };

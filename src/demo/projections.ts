@@ -11,11 +11,13 @@ export function toBrokerView(state: DemoState, companyId?: string) {
   const requests = scopedRequests(state, actor);
   const requestIds = new Set(requests.map((r) => r.id));
   const offers: BrokerOffer[] = state.offers
-    .filter((o) => requestIds.has(o.requestId))
+    // Brokers only see offers an admin approved.
+    .filter((o) => requestIds.has(o.requestId) && o.review === "approved")
     .map(({ companyId: _company, ...o }) => o);
   const propertyIds = new Set(offers.map((o) => o.propertyId));
   const properties: PublicProperty[] = state.properties
-    .filter((p) => p.availability === "active" || propertyIds.has(p.id))
+    // Only properties an admin approved as offers on the broker's requests.
+    .filter((p) => propertyIds.has(p.id))
     .map(
       ({
         companyId: _company,

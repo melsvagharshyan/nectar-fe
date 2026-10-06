@@ -15,7 +15,10 @@ import {
 } from "../../../api/records-api-ts/recordsApi";
 import { useDemo } from "../../../app/DemoProvider";
 import { notify } from "../../../components/toaster";
-import { TYPES_WITHOUT_ROOMS } from "../../../utils/constants";
+import {
+  OPEN_REQUEST_STAGES,
+  TYPES_WITHOUT_ROOMS,
+} from "../../../utils/constants";
 import { roleFromHash } from "../../../utils/helpers";
 import { useDirtyClose } from "../../../utils/hooks";
 import { SAVED_MESSAGES } from "./constants";
@@ -97,6 +100,11 @@ export function useDemoForm(props: DemoFormProps) {
   const dirtyClose = useDirtyClose(form.formState.isDirty, onClose);
   const [isMapOpen, setMapOpen] = useState(false);
   const save = useSaveRecord(props, records);
+  // The server sends a broker's edit of an approved request back to admin review.
+  const reReview =
+    roleFromHash() === "broker" &&
+    !!records.request &&
+    OPEN_REQUEST_STAGES.includes(records.request.stage);
 
   const submit = form.handleSubmit(async (values) => {
     const error = await save(values);
@@ -107,9 +115,13 @@ export function useDemoForm(props: DemoFormProps) {
       return;
     }
     dirtyClose.finish();
-    onSuccess(SAVED_MESSAGES[kind][id ? 1 : 0]);
+    onSuccess(
+      reReview
+        ? "Запрос обновлён и отправлен на проверку"
+        : SAVED_MESSAGES[kind][id ? 1 : 0],
+    );
     onClose();
   });
 
-  return { form, records, dirtyClose, submit, isMapOpen, setMapOpen };
+  return { form, records, reReview, dirtyClose, submit, isMapOpen, setMapOpen };
 }

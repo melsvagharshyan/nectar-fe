@@ -1,18 +1,17 @@
+import type { SignUpRole } from "../../../api/auth-api-ts/types";
 import type { IconName } from "../../../components/ui";
-import type { Role } from "../../../demo/types";
 
 export interface SignUpFormValues {
-  role: Role;
+  role: SignUpRole;
   name: string;
   email: string;
   phone: string;
   companyName: string;
-  adminCode: string;
   password: string;
   confirmPassword: string;
 }
 
-export type SignUpStep = "role" | "details";
+export type SignUpStep = "role" | "details" | "submitted";
 
 export interface SignUpStepCopy {
   title: string;
@@ -25,7 +24,7 @@ export interface RoleOptionDetails {
   tag: string;
   description: string;
   phonePlaceholder: string;
-  company?: {
+  company: {
     label: string;
     placeholder: string;
   };

@@ -2,6 +2,7 @@ import { Radio } from "antd";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Property } from "../../../demo/types";
+import { ControlledField } from "../../../components/form";
 import { Button, Overlay, OverlayFooter } from "../../../components/ui";
 import { cn, money } from "../../../utils/helpers";
 import type { TransferConfirmMode, TransferConfirmValues } from "../utils/types";
@@ -20,7 +21,7 @@ export function TransferConfirmDialog({
   onConfirm: (values: TransferConfirmValues) => void;
 }) {
   const { control, handleSubmit } = useForm<TransferConfirmValues>({
-    defaultValues: { soldPropertyId: "" },
+    defaultValues: { soldPropertyId: "", returnReason: "" },
     resolver: zodResolver(createTransferConfirmSchema(mode)),
   });
   const soldPropertyId = useWatch({ control, name: "soldPropertyId" });
@@ -36,8 +37,19 @@ export function TransferConfirmDialog({
         <p className={NOTICE}>
           {isSold
             ? "Проданным станет ровно один выбранный объект. Остальные останутся доступны."
-            : "Доступные предложения останутся выбранными. История передачи сохранится."}
+            : "Доступные предложения останутся забронированными, резерв будет снят. Брокер увидит причину."}
         </p>
+        {!isSold && (
+          <div className="mt-20">
+            <ControlledField
+              control={control}
+              name="returnReason"
+              label="Причина возврата"
+              type="textarea"
+              placeholder="Например: клиент отказался от сделки"
+            />
+          </div>
+        )}
         {isSold && (
           <Controller
             control={control}

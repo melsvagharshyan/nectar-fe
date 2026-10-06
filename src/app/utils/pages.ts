@@ -21,6 +21,9 @@ export const PartnerOffers = lazy(() =>
 export const PartnerWorkspace = lazy(() =>
   import("../../pages/partner-workspace").then((m) => ({ default: m.PartnerWorkspace })),
 );
+export const Registrations = lazy(() =>
+  import("../../pages/registrations").then((m) => ({ default: m.Registrations })),
+);
 export const Profile = lazy(() =>
   import("../../pages/profile").then((m) => ({ default: m.Profile })),
 );

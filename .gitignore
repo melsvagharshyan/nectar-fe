@@ -10,3 +10,9 @@ screenshots/
 *.log
 .DS_Store
 Thumbs.db
+
+# TypeScript build cache
+*.tsbuildinfo
+
+# Playwright MCP snapshots and screenshots
+.playwright-mcp/

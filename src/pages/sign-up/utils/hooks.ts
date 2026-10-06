@@ -12,6 +12,7 @@ import { signUpSchema } from "./validations";
 export function useSignUpForm() {
   const [signUp] = useSignUpMutation();
   const [step, setStep] = useState<SignUpStep>("role");
+  const [submittedEmail, setSubmittedEmail] = useState("");
   const form = useForm<SignUpFormValues>({
     defaultValues: SIGN_UP_DEFAULTS,
     resolver: zodResolver(signUpSchema),
@@ -21,14 +22,19 @@ export function useSignUpForm() {
   const submit = form.handleSubmit(async (values) => {
     const result = await signUp(toSignUpRequest(values));
     if (result.error) {
-      notify.error("Не удалось создать аккаунт", {
-        description: getApiErrorMessage(result.error),
-      });
+      const message = getApiErrorMessage(result.error);
+      // 409: the email already has an account or a pending application.
+      if ("status" in result.error && result.error.status === 409) {
+        form.setError("email", { message }, { shouldFocus: true });
+        return;
+      }
+      notify.error("Не удалось отправить заявку", { description: message });
       return;
     }
-    notify.success("Аккаунт создан", {
-      description: `Добро пожаловать в Nectar, ${result.data.user.name.split(" ")[0]}!`,
-    });
+    setSubmittedEmail(result.data.email);
+    setStep("submitted");
+    // Don't keep the password in memory once the application is filed.
+    form.reset(SIGN_UP_DEFAULTS);
   });
 
   const goToDetails = () => setStep("details");
@@ -41,6 +47,7 @@ export function useSignUpForm() {
     form,
     role,
     step,
+    submittedEmail,
     goToDetails,
     goToRole,
     submit,

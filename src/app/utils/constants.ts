@@ -89,7 +89,7 @@ export const ROLE_MENUS: Record<Role, MenuItem[]> = {
   broker: [
     { id: "workspace", label: "Главная", icon: "home" },
     { id: "clients", label: "База клиентов", icon: "users" },
-    { id: "objects", label: "База объектов", icon: "home" },
+    { id: "objects", label: "Объекты из предложений", icon: "home" },
     { id: "knowledge", label: "База знаний", icon: "book" },
     { id: "analytics", label: "Аналитика", icon: "chart" },
   ],
@@ -100,6 +100,7 @@ export const ROLE_MENUS: Record<Role, MenuItem[]> = {
   ],
   admin: [
     { id: "overview", label: "Обзор", icon: "chart" },
+    { id: "registrations", label: "Заявки", icon: "users", badge: "pendingRegistrations" },
     { id: "companies", label: "Компании", icon: "users" },
     { id: "workspace", label: "Запросы и сделки", icon: "list" },
     { id: "objects", label: "Объекты", icon: "home" },
@@ -131,10 +132,15 @@ export const ACTION_ERROR_TITLES: Record<DemoAction["type"], string> = {
   RESTORE: "Не удалось вернуть объект",
   DRAFT_TOGGLE: "Не удалось изменить подборку",
   SEND_OFFERS: "Не удалось отправить предложения",
-  TRANSFER: "Не удалось передать запрос в CRM",
+  TRANSFER: "Не удалось зарезервировать объекты",
   RETURN: "Не удалось вернуть запрос в работу",
   SELL: "Не удалось завершить сделку",
-  START: "Не удалось начать подбор",
+  SUBMIT: "Не удалось отправить запрос на проверку",
+  APPROVE_REQUEST: "Не удалось одобрить запрос",
+  REJECT_REQUEST: "Не удалось отклонить запрос",
+  APPROVE_OFFER: "Не удалось одобрить предложение",
+  DECLINE_OFFER: "Не удалось отклонить предложение",
+  RESUBMIT_OFFER: "Не удалось отправить предложение повторно",
 };
 
 export const AUTH_ROUTES = {

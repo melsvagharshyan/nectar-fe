@@ -4,13 +4,15 @@ import { Button } from "../../../components/ui";
 import { FORM } from "../../../utils/styles";
 import { SIGN_IN_FORM_ID } from "../utils/constants";
 import { useSignInForm } from "../utils/hooks";
+import { SignInNotice } from "./SignInNotice";
 
 export function SignInForm() {
-  const { form, submit } = useSignInForm();
+  const { form, submit, notice } = useSignInForm();
   const { isSubmitting } = form.formState;
 
   return (
     <form id={SIGN_IN_FORM_ID} className={FORM} onSubmit={submit} noValidate>
+      {notice && <SignInNotice notice={notice} />}
       <ControlledField
         control={form.control}
         name="email"
